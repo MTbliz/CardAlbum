@@ -1,0 +1,9 @@
+[DATABASE]
+host="localhost"
+port="32769"
+database = "dev_card_album"
+user = "admin"
+password = "admin"
+
+[SECRETS]
+secret_key = "123456"
