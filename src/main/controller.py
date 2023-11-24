@@ -1,23 +1,11 @@
-from flask import render_template, jsonify, request
-from src.models import Card
-
-from src.main.service import CardService, AlbumService
+from flask import render_template
 
 
-class CardsController:
+class MainController:
 
-    def __init__(self):
-        self.card_service = CardService()
+    def root(self):
+        return render_template("base.html")
 
-    def cards(self):
-        cards = self.card_service.get_cards()
-        return str(cards)
-
-    def create_card(self):
-        data = request.get_json()
-        card = Card(**data)
-        self.card_service.add_card(card)
-        return str(card), 201
 
 
 

@@ -1,8 +1,9 @@
 from flask import Flask
 from src.extensions import db
 from configuration import DevConfig
-from src.main import bp as main_bp
-from src.main.controller import CardsController
+from src.main.routes import bp as main_bp
+from src.album.album_routes import bp as album_bp
+from src.card.card_routes import bp as card_bp
 
 
 def create_app(config_class=DevConfig):
@@ -15,9 +16,7 @@ def create_app(config_class=DevConfig):
         db.create_all()
 
     # Register blueprints here
-    cards_controller = CardsController()
-    main_bp.add_url_rule('/', view_func=cards_controller.cards)
-    main_bp.add_url_rule('/card', view_func=cards_controller.create_card, methods=['POST'])
-
     app.register_blueprint(main_bp)
+    app.register_blueprint(album_bp, url_prefix='/albums')
+    app.register_blueprint(card_bp, url_prefix='/cards')
     return app

@@ -13,7 +13,7 @@ class DevConfig:
     #docker dev
     #db_host = "postgres"
     #port = "5432"
-    db_database = config["DATABASE"].get("database", None)
+    DB_DATABASE = config["DATABASE"].get("database", None)
     db_user = config["DATABASE"].get("user", None)
     db_password = config["DATABASE"].get("password", None)
 
