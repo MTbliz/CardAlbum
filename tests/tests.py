@@ -7,5 +7,5 @@ data = [
 ]
 
 
-response = requests.post(BASE + "card", json=data[0])
+response = requests.post(BASE + "cards/card", json=data[0])
 print(response.json())

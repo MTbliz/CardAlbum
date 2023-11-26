@@ -1,0 +1,17 @@
+@media (max-width: 577px) {
+   .content {
+       max-width: 81%
+       margin-top: 60px;
+       margin-left: 60px;
+   }
+
+}
+
+@media (min-width: 578px) {
+   .content{
+       margin-top: 60px;
+       margin-left: 150px;
+   }
+   .sidebar{
+   width: 160px
+}

@@ -1,0 +1,66 @@
+<div class="flex-container cards">
+{% for card in cards %}
+    <div class="card-container item">
+        <div class="row" style="height: 90%">
+            <div class="col-auto">
+                <img src="image_url" alt="Card image">
+            </div>
+        </div>
+        <div class="row" style="height: 10%; border-top: 1px solid black; text-align: center;">
+            <div class="col-auto">
+                <p>Price: {{ card.price }} Amount: {{ card.availability }}</p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+
+
+<style>
+.card-container {
+    background-color: white;
+    border: 2px solid #bacdd8;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 6px;
+    }
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #bacdd8;
+    justify-content: center;
+    max-width: 1200px;
+    padding: 2%;
+}
+
+
+@media (max-width: 577px) {
+   .card-container {
+       width: 150px;
+       height: 225px;
+       font-size: 11px;
+   }
+
+   .flex-container {
+    margin-top: 60px;
+}
+
+}
+
+@media (min-width: 578px) {
+   .card-container {
+       width: 200px;
+       height: 300px;
+       font-size: 16px;
+   }
+
+   .cards {
+   margin-top: 20px;
+   }
+
+}
+
+</style>
+
