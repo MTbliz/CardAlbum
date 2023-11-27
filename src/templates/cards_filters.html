@@ -1,11 +1,14 @@
 <div class="flex-container filters">
-        <div class="row">
-            {% for filter in available_filters %}
-            <div class="col-auto">
-                {% include 'filter.html' %}
-            </div>
-            {% endfor %}
-        </div>
+    <div class="row" style="display: flex">
+        <form method="post">
+            <span>{{ form.hidden_tag() }}</span>
+            <span class="filter-field" class="form-select">{{ form.set.label }} {{ form.set() }}</span>
+            <span class="filter-field">{{ form.color.label }} {{ form.color() }}</span>
+            <span class="filter-field">{{ form.mana.label }} {{ form.mana() }}</span>
+            <span class="filter-field">{{ form.rarity.label }} {{ form.rarity() }}</span>
+            <span class="filter-field">{{ form.submit() }}</span>
+        </form>
+    </div>
 </div>
 <style>
 .filters {
