@@ -1,16 +1,12 @@
 <div class="flex-container cards">
 {% for card in cards %}
-    <div class="card-container item">
+    <div class="card-container item" id="card_{{ card.id }}">
+        <div class="cards-dotmenu" style="position: absolute; margin-top:-20px">
+            {% include 'dotmenu.html' %}
+        </div>
         <div class="row" style="height: 90%">
-            <div class="col-auto test">
+            <div class="col-auto">
                 <img src="{{ url_for('static', filename='img/img.png') }}" alt="Card image" class="hover-image">
-                <div class="details" style="padding-right:20px">
-                    {{card.card_details.type}}
-                    {{card.card_details.set}}
-                    {{card.card_details.mana}}
-                    {{card.card_details.type}}
-                    {{card.card_details.type}}
-                </div>
             </div>
         </div>
         <div class="row" style="height: 10%; border-top: 1px solid black; text-align: center;">
@@ -26,6 +22,24 @@
 
 <style>
 
+.card-container {
+    background-color: white;
+    border: 2px solid #bacdd8;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 6px;
+    }
+
+.cards {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #bacdd8;
+    justify-content: center;
+    max-width: 1200px;
+    padding: 2%;
+}
+
 img {
  transition: all 0.5s ease;
  width: 100%;
@@ -36,27 +50,6 @@ img {
 img:hover {
  transform: scale(1.2);
  position: relative
-}
-
-.card-container {
-    background-color: white;
-    border: 2px solid #bacdd8;
-    padding: 10px;
-    border-radius: 12px;
-    margin: 6px;
-    }
-
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    border: 2px solid #bacdd8;
-    justify-content: center;
-    max-width: 1200px;
-    padding: 2%;
-}
-
-.test {
- position: relative;
 }
 
 .hover-image {
@@ -70,23 +63,6 @@ img:hover {
    z-index: 2;
 }
 
-.details {
-   display: none;
-   position: absolute;
-   height:150%;
-   left: 100%;
-   padding-left: 10px;
-}
-
-.hover-image:hover ~ .details {
-   display: block;
-   margin-left: 30px;
-   background-color: coral;
-   z-index: 1
-}
-
-
-
 @media (max-width: 577px) {
    .card-container {
        width: 150px;
@@ -98,9 +74,10 @@ img:hover {
     margin-top: 60px;
 }
 
-   .details {
-      top: -45px;
-    }
+    .cards-dotmenu{
+        margin-left: 120px;
+   }
+
 }
 
 @media (min-width: 578px) {
@@ -110,13 +87,8 @@ img:hover {
        font-size: 16px;
    }
 
-   .cards {
-   margin-top: 20px;
+   .cards-dotmenu{
+        margin-left: 170px;
    }
-
-   .details {
-      top: -60px;
-    }
-
 </style>
 

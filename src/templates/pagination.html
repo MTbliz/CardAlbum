@@ -1,0 +1,67 @@
+<div class="row" style="max-width:1220px">
+    <div class="col-12 pagination-container" >
+        <span class="pagination">
+            <a href="{{ url_for(url_view, page=paginated_data.prev_num) }}"
+               class="btn btn-outline-dark" {% if paginated_data.page== 1 %}disabled{% endif %}>
+                <div style="font-size:small">&laquo;</div>
+            </a>
+            <!--Loop through the number of pages to display a link for each-->
+            {% for page_num in paginated_data.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+            <!-- Check for active page and set the link to "Active"-->
+            {% if paginated_data.page == page_num %}
+            <a href="{{ url_for(url_view, page=page_num) }}" class="btn btn-dark"
+               style="font-size: small">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for(url_view, page=page_num) }}"
+               class="btn btn-outline-dark" style="font-size: small">
+                {{ page_num }}
+            </a>
+            {% endif %}
+            {% else %}
+            ...
+            {% endif %}
+            {% endfor %}
+            <a href="{{ url_for(url_view, page=paginated_data.next_num)}}"
+               class="btn btn-outline-dark" {% if paginated_data.page== paginated_data.pages %}disabled{% endif
+               %}>
+                <div style="font-size:small">&raquo;</div>
+            </a>
+        </span>
+
+        <span class="num-pages">
+            Page {{ paginated_data.page }} of {{ paginated_data.pages }}
+        </span>
+    </div>
+</div>
+<div class="row" style="max-width:1220px">
+    <br>
+    <br>
+</div>
+
+
+    <style>
+
+.pagination {
+    margin-top: 10px;
+}
+
+.num-pages {
+    text-align: left;
+    margin-top: 10px;
+    float: right;
+}
+
+.pagination-container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+
+
+
+
+</style>

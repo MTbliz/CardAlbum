@@ -20,6 +20,7 @@ class Album(db.Model):
 
 class CardSet(enum.Enum):
 
+    ALL = 'All'
     SET1 = "Wilds of Eldraine"
     SET2 = "March of the Machine: The Aftermath"
     SET3 = "March of the Machine"
@@ -34,6 +35,7 @@ class CardSet(enum.Enum):
 
 class CardRarity(enum.Enum):
 
+    ALL = 'All'
     COMMON = 'Common'
     UNCOMMON = 'Uncommon'
     RARE = 'Rare'
@@ -42,6 +44,7 @@ class CardRarity(enum.Enum):
 
 class CardColor(enum.Enum):
 
+    ALL = 'All'
     BLACK = 'black'
     BLUE = 'blue'
     GREEN = 'green'
@@ -52,6 +55,7 @@ class CardColor(enum.Enum):
 
 class CardMana(enum.Enum):
 
+    ALL = 'All'
     ZERO = '0'
     ONE = '1'
     TWO = '2'

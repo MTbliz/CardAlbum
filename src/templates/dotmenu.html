@@ -1,0 +1,88 @@
+<style>
+    .container{
+        place-items: center;
+    }
+    .group-menu{
+        cursor: pointer
+    }
+
+    .dot{
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: black;
+    margin-top: 4px;
+    }
+
+    .frame{
+        visibility: hidden;
+    }
+
+    .frame .info{
+        font-size: 15px;
+        color: white;
+        border-bottom: 1px solid white;
+        padding-top: 6px;
+        cursor: pointer;
+    }
+
+    .frame .info:hover{
+        background-color: #363333;
+    }
+
+    .frame .info span {
+        margin-left: 10px;
+    }
+
+    .style{
+        width: 105%;
+        height: 100%;
+        background-color: #111;
+        margin-top: 5px;
+        border-radius: 10px
+    }
+</style>
+<div class="container">
+    <div class="group-menu" onclick="fun({{ card.id }})">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <!--end group-menu class end-->
+    <div class="frame" id="frame{{ card.id }}">
+        <div class="info"><span>Add to Album</span></div>
+        <div class="info"><span>Remove from Album</span></div>
+        <div class="info"><span>Sell</span></div>
+        <div class="info" onclick="remove({{ card.id }})"><span>Exit</span></div>
+    </div>
+    <!--end frame1 class end-->
+</div>
+<!--end container class end-->
+
+<script>
+
+  function fun(id){
+  var frame_id = "frame" + id
+
+    var elements = document.getElementsByClassName('frame');
+    for (var i = 0; i < elements.length; i++) {
+          if (elements[i].style.visibility === 'visible') {
+              var frame_to_close = "frame" + (i + 1)
+              document.getElementById(frame_to_close).classList.remove("style");
+              document.getElementById(frame_to_close).style.visibility="hidden"
+          }
+
+    }
+
+
+    document.getElementById(frame_id).style.visibility="visible"
+    document.getElementById(frame_id).classList.add("style");
+  }
+
+  function remove(id){
+  var frame_id = "frame" + id
+    document.getElementById(frame_id).classList.remove("style");
+    document.getElementById(frame_id).style.visibility="hidden"
+  }
+
+</script>
