@@ -39,7 +39,7 @@ class CardRarity(enum.Enum):
     COMMON = 'Common'
     UNCOMMON = 'Uncommon'
     RARE = 'Rare'
-    MYTHIC_RARE = 'Mythic Rare'
+    MYTHIC_RARE = 'Mythic'
 
 
 class CardColor(enum.Enum):
@@ -69,6 +69,16 @@ class CardMana(enum.Enum):
     TEN = '10'
 
 
+class CardQuality(enum.Enum):
+
+    MINT = 'Mint'
+    NEAR_MINT = 'Near Mint'
+    GOOD_LIGHTLY_PLAYED = 'Good (Lightly Played)'
+    PLAYED = 'Played'
+    HEAVILY_PLAYED = 'Heavily Played'
+    POOR = 'Poor'
+
+
 class Card(db.Model):
 
     __tablename__ = "cards"
@@ -78,7 +88,6 @@ class Card(db.Model):
     price = db.Column(db.Float(), nullable=False)
     availability = db.Column(db.Integer(), nullable=False)
     type = db.Column(db.String(), nullable=False)
-    image = db.Column(db.LargeBinary, nullable=True)
     card_details = db.relationship('CardDetails', backref='card', uselist=False)
 
     def __repr__(self) -> str:

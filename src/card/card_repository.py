@@ -1,4 +1,4 @@
-from src.models import Card, CardDetails
+from src.models import Card, CardDetails, CardSet
 from sqlalchemy import func, desc, and_, asc
 from src import db
 
@@ -42,3 +42,6 @@ class CardRepository:
             raise Exception("Card not found")
         db.session.delete(card)
         db.session.commit()
+
+    def get_set_value_by_name(self, set_name):
+        return CardSet[set_name].value

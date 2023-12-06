@@ -1,7 +1,7 @@
 <div class="d-flex flex-column  align-items-center align-items-sm-start px-3 pt-2 text-white">
     <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
         <li class="nav-item">
-            <a href="#" class="nav-link align-middle px-0">
+            <a href="{{ url_for('main.root') }}" class="nav-link align-middle px-0">
                 <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
             </a>
         </li>
@@ -10,7 +10,7 @@
                 <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Cards</span> </a>
             <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                 <li class="w-100">
-                    <a href="#" class="nav-link px-0"> <span class="d-sm-inline small-screen">Add Cards</span></a>
+                    <a href="{{ url_for('card.create_card') }}" class="nav-link px-0"> <span class="d-sm-inline small-screen">Add Cards</span></a>
                 </li>
                 <li>
                     <a href="{{ url_for('card.cards') }}" class="nav-link px-0"> <span class=" d-sm-inline small-screen">List Cards</span></a>
