@@ -33,39 +33,41 @@ class CardService:
         title = concatenate_words_in_string(title)
 
         final_link = f"{base_link}/{mtg_set}/{title}/{suffix}"
-
         res = requests.get(final_link)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        price_card_gatherer = soup.find(class_='price-card-gatherer')
-        gatherer_container = price_card_gatherer.find(class_='gatherer-container')
-        mana_cost_tag = gatherer_container.find(class_='gatherer-name').find(class_='manacost')
-        mana_cost = mana_cost_tag.attrs['aria-label'].split('mana cost: ')[1]
-        type_tag = gatherer_container.find(class_='collapse').find(class_='gatherer-type')
-        type = type_tag.text
-        rarity_tag = gatherer_container \
-            .find(class_='collapse') \
-            .find(class_='gatherer-type-power') \
-            .find(class_='gatherer-rarity')
-        rarity = rarity_tag.text
+        result = {'status_code': res.status_code,
+                  'body': {}}
+        if result['status_code'] == 200:
+            soup = BeautifulSoup(res.text, 'html.parser')
+            price_card_gatherer = soup.find(class_='price-card-gatherer')
+            gatherer_container = price_card_gatherer.find(class_='gatherer-container')
+            mana_cost_tag = gatherer_container.find(class_='gatherer-name').find(class_='manacost')
+            mana_cost = mana_cost_tag.attrs['aria-label'].split('mana cost: ')[1]
+            type_tag = gatherer_container.find(class_='collapse').find(class_='gatherer-type')
+            type = type_tag.text
+            rarity_tag = gatherer_container \
+                .find(class_='collapse') \
+                .find(class_='gatherer-type-power') \
+                .find(class_='gatherer-rarity')
+            rarity = rarity_tag.text
 
-        price_card_name_header = soup.find(class_='price-card-name-header')
-        price_tag = price_card_name_header \
-            .find(class_='price-card-current-prices'). \
-            find(class_='price-box-price')
-        price = price_tag.text.replace('$', '').strip()
-        img_tag = price_card_gatherer \
-            .find(class_='price-card-image').find(class_='price-card-image-image')
-        img_url = img_tag.attrs['src']
-        img_data = requests.get(img_url).content
+            price_card_name_header = soup.find(class_='price-card-name-header')
+            price_tag = price_card_name_header \
+                .find(class_='price-card-current-prices'). \
+                find(class_='price-box-price')
+            price = price_tag.text.replace('$', '').strip()
+            img_tag = price_card_gatherer \
+                .find(class_='price-card-image').find(class_='price-card-image-image')
+            img_url = img_tag.attrs['src']
+            img_data = requests.get(img_url).content
 
-        result = {
-            'mana_cost': self._get_mana_cost_number(mana_cost),
-            'color': self._get_card_color(mana_cost),
-            'rarity': rarity,
-            'type': remove_special_characters(type),
-            'price': price,
-            'img_data': img_data
-        }
+            result['body'] = {
+                'mana_cost': self._get_mana_cost_number(mana_cost),
+                'color': self._get_card_color(mana_cost),
+                'rarity': rarity,
+                'type': remove_special_characters(type),
+                'price': price,
+                'img_data': img_data
+            }
         return result
 
     def _get_mana_cost_number(self, mana_cost: str):

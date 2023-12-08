@@ -8,7 +8,7 @@
 }">
 
     <div class="flex-container card" style="max-width: 900px;">
-        <div class="row container-row" >
+        <div class="row container-row">
             <div class="col-6 card-select" style="min-width:223px">
                 <form method="post">
                     <div>{{ form.hidden_tag() }}</div>
@@ -51,15 +51,36 @@
                                     {{ create_card_form.type.label }} {{ create_card_form.type() }}
                                 </div>
                                 <div class="form-field">
-                                    {{ create_card_form.quality.label }} {{ create_card_form.quality() }}
+                                    {{ create_card_form.quality.label }}
+                                    {% if create_card_form.title.data == None %}
+                                            {{ create_card_form.quality(disabled=True) }}
+                                    {% else %}
+                                        {{ create_card_form.quality() }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-field">
-                                    {{ create_card_form.price.label }} {{ create_card_form.price() }}
+                                    {{ create_card_form.price.label }}
+                                    {% if create_card_form.title.data == None %}
+                                    {{ create_card_form.price(disabled=True) }}
+                                    {% else %}
+                                    {{ create_card_form.price() }}
+                                    {% endif %}
                                 </div>
                                 <div class="form-field">
-                                    {{ create_card_form.availability.label }} {{ create_card_form.availability() }}
+                                    {{ create_card_form.availability.label }}
+                                    {% if create_card_form.title.data == None %}
+                                    {{ create_card_form.availability(disabled=True) }}
+                                    {% else %}
+                                    {{ create_card_form.availability() }}
+                                    {% endif %}
                                 </div>
-                                <div class="form-field">{{ create_card_form.submit() }}</div>
+                                <div class="form-field">
+                                    {% if create_card_form.title.data == None %}
+                                    {{ create_card_form.submit(disabled=True) }}
+                                    {% else %}
+                                    {{ create_card_form.submit() }}
+                                    {% endif %}
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -138,6 +159,10 @@
      margin-top: 60px;
   }
 }
+
+
+
+
 
 
 
