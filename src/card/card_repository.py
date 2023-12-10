@@ -1,4 +1,4 @@
-from src.models import Card, CardDetails, CardSet
+from src.models import Card, CardDetails, CardSet, CardColorEnum, CardColor
 from sqlalchemy import func, desc, and_, asc
 from src import db
 
@@ -11,8 +11,11 @@ class CardRepository:
 
             # Apply the filters
             for attr, value in filters.items():
-                query = query.filter(
-                    getattr(CardDetails if 'CardDetails' in attr else Card, attr.split('.')[1]) == value)
+                if attr == 'CardDetails.colors' and hasattr(CardColorEnum, value):
+                    query = query.filter(CardDetails.colors.any(CardColor.color == CardColorEnum[value]))
+                else:
+                    query = query.filter(
+                        getattr(CardDetails if 'CardDetails' in attr else Card, attr.split('.')[1]) == value)
             query = query.order_by(field_sort, Card.availability.asc())
             return query.paginate(page=page, per_page=ROWS_PER_PAGE, error_out=False)
 

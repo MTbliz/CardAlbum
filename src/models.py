@@ -3,21 +3,6 @@ import enum
 from sqlalchemy import Enum
 
 
-albums_cards = db.Table('albums_cards', db.Model.metadata,
-                             db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
-                             db.Column('card_id', db.Integer, db.ForeignKey('cards.id'))
-                        )
-
-
-class Album(db.Model):
-
-    __tablename__ = "albums"
-
-    id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(), nullable=False)
-    cards = db.relationship("Card", secondary=albums_cards, backref='albums')
-
-
 class CardSet(enum.Enum):
 
     ALL = 'All'
@@ -42,7 +27,7 @@ class CardRarity(enum.Enum):
     MYTHIC_RARE = 'Mythic'
 
 
-class CardColor(enum.Enum):
+class CardColorEnum(enum.Enum):
 
     ALL = 'All'
     BLACK = 'black'
@@ -79,6 +64,26 @@ class CardQuality(enum.Enum):
     POOR = 'Poor'
 
 
+albums_cards = db.Table('albums_cards', db.Model.metadata,
+                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
+                        db.Column('card_id', db.Integer, db.ForeignKey('cards.id'))
+                        )
+
+colors_card_details = db.Table('colors_card_details', db.Model.metadata,
+                               db.Column("card_color_id", db.Integer, db.ForeignKey('card_colors.id'), primary_key=True),
+                               db.Column('card_details_id', db.Integer, db.ForeignKey('card_details.id'), primary_key=True)
+                      )
+
+
+class Album(db.Model):
+
+    __tablename__ = "albums"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column(db.String(), nullable=False)
+    cards = db.relationship("Card", secondary=albums_cards, backref='albums')
+
+
 class Card(db.Model):
 
     __tablename__ = "cards"
@@ -99,12 +104,20 @@ class CardDetails(db.Model):
     __tablename__ = "card_details"
 
     id = db.Column(db.Integer(), primary_key=True)
-    color = db.Column(Enum(CardColor))
     mana = db.Column(Enum(CardMana))
     rarity = db.Column(Enum(CardRarity))
     set = db.Column(Enum(CardSet))
     type = db.Column(db.String(), nullable=False)
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'), nullable=False)
+    colors = db.relationship("CardColor", secondary=colors_card_details)
+
+
+class CardColor(db.Model):
+
+    __tablename__ = 'card_colors'
+
+    id = db.Column(db.Integer(), primary_key=True)
+    color = db.Column(Enum(CardColorEnum), nullable=False)
 
 
 

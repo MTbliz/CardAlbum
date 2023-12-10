@@ -1,10 +1,10 @@
-from src.models import Card, CardDetails, CardSet, CardMana, CardQuality, CardRarity, CardColor
+from src.models import Card, CardDetails, CardColor, CardSet, CardMana, CardQuality, CardRarity, CardColorEnum
 
 class CardDTO:
 
-    def __init__(self, title, color, mana, rarity, card_set, card_type, quality, price, availability):
+    def __init__(self, title, colors, mana, rarity, card_set, card_type, quality, price, availability):
         self.title = title
-        self.color = color
+        self.colors = colors
         self.mana = mana
         self.rarity = rarity
         self.card_set = card_set
@@ -14,7 +14,7 @@ class CardDTO:
         self.availability = availability
 
     def to_card(self):
-        color = CardColor(self.color).name
+        colors = [CardColorEnum(color).name for color in self.colors]
         mana = CardMana(str(self.mana)).name
         rarity = CardRarity(self.rarity).name
         card_set = CardSet(self.card_set).name
@@ -26,7 +26,8 @@ class CardDTO:
         card.type = self.card_type
 
         card_details = CardDetails()
-        card_details.color = color
+        new_colors = [CardColor(color=color) for color in colors]
+        card_details.colors = new_colors
         card_details.mana = mana
         card_details.rarity = rarity
         card_details.set = card_set

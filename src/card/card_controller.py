@@ -18,18 +18,18 @@ class CardsController:
         form = CardsFiltersForm()
 
         if form.validate_on_submit():
-            session['card_selected_set'] = request.form.get('set', "All")
-            session['card_selected_color'] = request.form.get('color', "All")
-            session['card_selected_mana'] = request.form.get('mana', "All")
-            session['card_selected_rarity'] = request.form.get('rarity', "All")
+            session['card_selected_set'] = request.form.get('set', "ALL")
+            session['card_selected_color'] = request.form.get('color', "ALL")
+            session['card_selected_mana'] = request.form.get('mana', "ALL")
+            session['card_selected_rarity'] = request.form.get('rarity', "ALL")
             return redirect(url_for('card.cards'))
 
         page = request.args.get('page', 1, type=int)
         filters = {}
-        selected_set = session.get('card_selected_set', "All")
-        selected_color = session.get('card_selected_color', "All")
-        selected_mana = session.get('card_selected_mana', "All")
-        selected_rarity = session.get('card_selected_rarity', "All")
+        selected_set = session.get('card_selected_set', "ALL")
+        selected_color = session.get('card_selected_color', "ALL")
+        selected_mana = session.get('card_selected_mana', "ALL")
+        selected_rarity = session.get('card_selected_rarity', "ALL")
 
         if selected_set == "ALL":
             filters.pop("CardDetails.set", None)
@@ -37,9 +37,9 @@ class CardsController:
             filters['CardDetails.set'] = selected_set
 
         if selected_color == "ALL":
-            filters.pop("CardDetails.color", None)
+            filters.pop("CardDetails.colors", None)
         else:
-            filters['CardDetails.color'] = selected_color
+            filters['CardDetails.colors'] = selected_color
 
         if selected_mana == "ALL":
             filters.pop("CardDetails.mana", None)
@@ -102,6 +102,7 @@ class CardsController:
         if create_card_form.validate_on_submit():
             card_title = create_card_form.title.data
             card_color_str = create_card_form.color.data
+            card_colors = card_color_str.split(",")
             card_mana_str = create_card_form.mana.data
             card_rarity_str = create_card_form.rarity.data
             card_set_str = create_card_form.set.data
@@ -110,7 +111,7 @@ class CardsController:
             card_price = create_card_form.price.data
             card_availability = create_card_form.availability.data
             card_dto = CardDTO(card_title,
-                               card_color_str,
+                               card_colors,
                                card_mana_str,
                                card_rarity_str,
                                card_set_str,

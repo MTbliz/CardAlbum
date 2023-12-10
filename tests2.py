@@ -1,6 +1,6 @@
 import requests
 import json
-from src.models import Card, CardColor, CardMana, CardRarity, CardSet, CardDetails
+from src.models import Card, CardColorEnum, CardMana, CardRarity, CardSet, CardDetails
 from src.extensions import db
 from run import app
 
@@ -20,7 +20,7 @@ example_card.image = b"example_image_binary_data" # Replace with actual binary d
 example_card_details = CardDetails()
 
 # Set the properties
-example_card_details.color = CardColor.BLUE
+example_card_details.color = CardColorEnum.BLUE
 example_card_details.mana = CardMana.ONE
 example_card_details.rarity = CardRarity.COMMON
 example_card_details.set = CardSet.SET1

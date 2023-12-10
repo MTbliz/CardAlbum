@@ -53,7 +53,7 @@
                                 <div class="form-field">
                                     {{ create_card_form.quality.label }}
                                     {% if create_card_form.title.data == None %}
-                                            {{ create_card_form.quality(disabled=True) }}
+                                            {{ create_card_form.quality(disabled=True, style="color: transparent;") }}
                                     {% else %}
                                         {{ create_card_form.quality() }}
                                     {% endif %}
@@ -103,6 +103,13 @@
     align-items: center;
     }
 
+input[disabled] {
+    background-color: rgb(251, 251, 251);
+   }
+
+select[disabled] {
+    background-color: rgb(251, 251, 251);
+   }
 
 .container-row {
  display: flex;
