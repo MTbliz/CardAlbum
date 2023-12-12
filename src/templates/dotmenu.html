@@ -49,6 +49,8 @@
     width: 100%;
     height: 100%;
   }
+
+
 </style>
 <div class="container">
     <div class="group-menu" onclick="fun({{ user_card.id }})">
@@ -58,8 +60,36 @@
     </div>
     <!--end group-menu class end-->
     <div class="frame" id="frame{{ user_card.id }}">
-        <div class="info"><span>Add to Album</span></div>
-        <div class="info"><span>Remove from Album</span></div>
+        <div class="info">
+            <div id="parent-add{{ user_card.id }}">
+                <span>Add to album</span>
+                <div id="hover-content-add{{ user_card.id }}" style="display:none;">
+                    <ul class="list-categories">
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                    </ul>
+            </div>
+            </div>
+        </div>
+        <div class="info">
+            <div id="parent-remove{{ user_card.id }}">
+                <span>Remove from album</span>
+                <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
+                    <ul class="list-categories">
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                     <li>Bed</li>
+                    </ul>
+            </div>
+            </div>
+        </div>
         <a class="delete-card" href="{{ url_for('card.delete_user_card', id=user_card.id) }}">
             <div class="info"><span> Delete Card</span></div>
         </a>
@@ -70,22 +100,23 @@
 </div>
 <!--end container class end-->
 
+
 <script>
 
   function fun(id){
   var frame_id = "frame" + id
 
     var elements = document.getElementsByClassName('frame');
-    for (var i = 0; i < elements.length; i++) {
-          if (elements[i].style.visibility === 'visible') {
-              var frame_to_close = "frame" + (i + 1)
+    var ids = Array.from(elements).map(frame => frame.id);
+
+    ids.forEach(function(id) {
+          if (document.getElementById(id).style.visibility === 'visible') {
+              var frame_to_close = id
               document.getElementById(frame_to_close).classList.remove("style");
               document.getElementById(frame_to_close).style.visibility="hidden"
           }
 
-    }
-
-
+    });
     document.getElementById(frame_id).style.visibility="visible"
     document.getElementById(frame_id).classList.add("style");
   }
@@ -108,6 +139,36 @@
     console.error('Error:', error);
     });
   }
+
+
+window.onload = function() {
+   var elements = document.getElementsByClassName('frame');
+   var frame_ids = Array.from(elements).map(frame => frame.id);
+
+   frame_ids.forEach(function(frame_id) {
+       let id = frame_id.split("frame")[1];
+       console.log(frame_id)
+       document.getElementById('parent-add' + id).addEventListener('click', function() {
+           var hoverContent = document.getElementById('hover-content-add' + id);
+           if (hoverContent.style.display === 'none') {
+               hoverContent.style.display = 'block';
+           } else {
+               hoverContent.style.display = 'none';
+           }
+       });
+
+       document.getElementById('parent-remove' + id).addEventListener('click', function() {
+          var hoverContent2 = document.getElementById('hover-content-remove' + id);
+          if (hoverContent2.style.display === 'none') {
+              hoverContent2.style.display = 'block';
+          } else {
+              hoverContent2.style.display = 'none';
+          }
+       });
+   });
+}
+
+
 
 
 </script>
