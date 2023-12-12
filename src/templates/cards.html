@@ -1,17 +1,17 @@
 <div class="flex-container cards">
-{% for card in cards %}
-    <div class="card-container item" id="card_{{ card.id }}">
+{% for user_card in user_cards %}
+    <div class="card-container item" id="card_{{ user_card.id }}">
         <div class="cards-dotmenu" style="position: absolute; margin-top:-20px">
             {% include 'dotmenu.html' %}
         </div>
         <div class="row" style="height: 90%">
             <div class="col-auto">
-                <img src="{{ url_for('static', filename='img/' + card.title + '.jpg') }}" alt="Card image" class="hover-image">
+                <img src="{{ url_for('static', filename='img/' + user_card.card.title + '.jpg') }}" alt="Card image" class="hover-image">
             </div>
         </div>
         <div class="row" style="height: 10%; border-top: 1px solid black; text-align: center;">
             <div class="col-auto">
-                <p>Price: {{ card.price }} Amount: {{ card.availability }}</p>
+                <p>Price: {{ user_card.price }} Amount: {{ user_card.availability }}</p>
             </div>
         </div>
     </div>

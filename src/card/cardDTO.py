@@ -1,17 +1,15 @@
-from src.models import Card, CardDetails, CardColor, CardSet, CardMana, CardQuality, CardRarity, CardColorEnum
+from src.models import Card, UserCard, CardDetails, CardColor, CardSet, CardMana, CardQuality, CardRarity, CardColorEnum
+
 
 class CardDTO:
 
-    def __init__(self, title, colors, mana, rarity, card_set, card_type, quality, price, availability):
+    def __init__(self, title, colors, mana, rarity, card_set, card_type):
         self.title = title
         self.colors = colors
         self.mana = mana
         self.rarity = rarity
         self.card_set = card_set
         self.card_type = card_type
-        self.quality = quality
-        self.price = price
-        self.availability = availability
 
     def to_card(self):
         colors = [CardColorEnum(color).name for color in self.colors]
@@ -21,8 +19,6 @@ class CardDTO:
 
         card = Card()
         card.title = self.title
-        card.price = self.price
-        card.availability = self.availability
         card.type = self.card_type
 
         card_details = CardDetails()
@@ -36,3 +32,21 @@ class CardDTO:
 
         card.card_details = card_details
         return card
+
+
+class UserCardDTO:
+
+    def __init__(self, card, price, availability, quality):
+        self.card = card
+        self.price = price
+        self.availability = availability
+        self.quality = quality
+
+    def to_user_card(self):
+        quality = self.quality
+        user_card = UserCard()
+        user_card.price = self.price
+        user_card.availability = self.availability
+        user_card.quality = quality
+        user_card.card = self.card
+        return user_card

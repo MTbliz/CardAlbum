@@ -64,10 +64,10 @@ class CardQuality(enum.Enum):
     POOR = 'Poor'
 
 
-albums_cards = db.Table('albums_cards', db.Model.metadata,
-                        db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
-                        db.Column('card_id', db.Integer, db.ForeignKey('cards.id'))
-                        )
+albums_user_cards = db.Table('albums_user_cards', db.Model.metadata,
+                             db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
+                             db.Column('user_card_id', db.Integer, db.ForeignKey('user_cards.id'))
+                             )
 
 colors_card_details = db.Table('colors_card_details', db.Model.metadata,
                                db.Column("card_color_id", db.Integer, db.ForeignKey('card_colors.id'), primary_key=True),
@@ -81,7 +81,19 @@ class Album(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(), nullable=False)
-    cards = db.relationship("Card", secondary=albums_cards, backref='albums')
+    user_cards = db.relationship("UserCard", secondary=albums_user_cards, backref='albums')
+
+
+class UserCard(db.Model):
+
+    __tablename__ = "user_cards"
+
+    id = db.Column(db.Integer(), primary_key=True)
+
+    price = db.Column(db.Float(), nullable=False)
+    availability = db.Column(db.Integer(), nullable=False)
+    quality = db.Column(Enum(CardQuality))
+    card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
 
 
 class Card(db.Model):
@@ -90,10 +102,9 @@ class Card(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(), nullable=False)
-    price = db.Column(db.Float(), nullable=False)
-    availability = db.Column(db.Integer(), nullable=False)
     type = db.Column(db.String(), nullable=False)
     card_details = db.relationship('CardDetails', backref='card', uselist=False)
+    user_cards = db.relationship('UserCard', backref='card')
 
     def __repr__(self) -> str:
         return f'{self.id}'

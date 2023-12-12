@@ -41,19 +41,30 @@
         margin-top: 5px;
         border-radius: 10px
     }
+
+          .delete-card {
+    color: inherit;
+    background-color: blue;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+  }
 </style>
 <div class="container">
-    <div class="group-menu" onclick="fun({{ card.id }})">
+    <div class="group-menu" onclick="fun({{ user_card.id }})">
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
     </div>
     <!--end group-menu class end-->
-    <div class="frame" id="frame{{ card.id }}">
+    <div class="frame" id="frame{{ user_card.id }}">
         <div class="info"><span>Add to Album</span></div>
         <div class="info"><span>Remove from Album</span></div>
+        <a class="delete-card" href="{{ url_for('card.delete_user_card', id=user_card.id) }}">
+            <div class="info"><span> Delete Card</span></div>
+        </a>
         <div class="info"><span>Sell</span></div>
-        <div class="info" onclick="remove({{ card.id }})"><span>Exit</span></div>
+        <div class="info" onclick="remove({{ user_card.id }})"><span>Exit</span></div>
     </div>
     <!--end frame1 class end-->
 </div>
@@ -84,5 +95,19 @@
     document.getElementById(frame_id).classList.remove("style");
     document.getElementById(frame_id).style.visibility="hidden"
   }
+
+  function deleteCard(id) {
+    console.log(id)
+    fetch('card/' + id, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    });
+  }
+
 
 </script>
