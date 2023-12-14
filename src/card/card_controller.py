@@ -102,13 +102,15 @@ class CardsController:
                 create_card_form.color.data = ",".join([card_color.color.value for card_color in card.card_details.colors])
 
         if create_card_form.validate_on_submit():
-
-            user_card_dto = UserCardDTO(card,
-                                   create_card_form.price.data,
-                                   create_card_form.availability.data,
-                                   create_card_form.quality.data)
-            user_card = user_card_dto.to_user_card()
-            self.user_card_service.add_card(user_card)
+            if not self.user_card_service.check_if_user_card_exists(card.id, "User"):
+                user_card_dto = UserCardDTO(card,
+                                       create_card_form.price.data,
+                                       create_card_form.availability.data,
+                                       create_card_form.quality.data)
+                user_card = user_card_dto.to_user_card()
+                self.user_card_service.add_card(user_card)
+            else:
+                print("This card is in your collection.")
 
         return render_template('cards/create_card_page.html', form=search_form, create_card_form=create_card_form, card_image=card_image)
 
@@ -151,4 +153,5 @@ class CardsController:
     def delete_user_card(self, id):
         self.user_card_service.delete_card(id)
         return redirect(url_for('card.cards'))
+
 

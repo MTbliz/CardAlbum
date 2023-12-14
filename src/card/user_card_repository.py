@@ -38,3 +38,6 @@ class UserCardRepository:
         db.session.delete(user_card)
         db.session.commit()
 
+    def check_if_user_card_exists(self, card_id, user):
+        user_card = UserCard.query.filter_by(card_id=card_id).first()
+        return True if user_card else False

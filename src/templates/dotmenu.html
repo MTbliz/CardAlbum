@@ -42,9 +42,8 @@
         border-radius: 10px
     }
 
-          .delete-card {
+          .delete-card, .album-item {
     color: inherit;
-    background-color: blue;
     text-decoration: none;
     width: 100%;
     height: 100%;
@@ -80,12 +79,9 @@
                 <span>Remove from album</span>
                 <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
+                        {% for album in user_card.albums %}
+                            <li><a class="album-item" href="1">{{ album.title }}</a></li>
+                        {% endfor %}
                     </ul>
             </div>
             </div>

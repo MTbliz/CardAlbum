@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
 from src.card.card_service import CardService
+from src.models import UserCard, Album
+from src import db
+from run import app
+
 
 
 def get_card_details_from_url(base_link, mtg_set, title):
@@ -47,6 +51,19 @@ if __name__ == '__main__':
     mtg_set = "Wilds of Eldraine"
     title = "Agatha's Soul Cauldron"
 
-    card_service = CardService()
-    result = card_service.get_card_details_from_url(base_link, mtg_set, title)
-    print(result)
+    #card_service = CardService()
+    #result = card_service.get_card_details_from_url(base_link, mtg_set, title)
+    #print(result)
+
+
+    with app.app_context():
+        new_album = Album()
+        new_album.title = "TestAlbum"
+
+        user_cards = UserCard.query.all()
+
+        new_album.user_cards = user_cards
+
+
+        db.session.add(new_album)
+        db.session.commit()

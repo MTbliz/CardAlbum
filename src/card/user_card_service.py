@@ -18,3 +18,6 @@ class UserCardService:
     def delete_card(self, card_id):
         return self.user_card_repository.delete_card(card_id)
 
+    def check_if_user_card_exists(self, card_id, user):
+        return self.user_card_repository.check_if_user_card_exists(card_id, user)
+
