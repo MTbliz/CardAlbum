@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div>
+            {% include 'cards_filters.html' %}
+        </div>
+    </div>
+    <div class="row">
+        <div >
+            {% include 'albums/album_cards.html' %}
+        </div>
+    </div>
+        <div class="row">
+        <div >
+            {% with paginated_data=user_cards %}
+                {% include 'pagination.html'%}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+{% endblock %}

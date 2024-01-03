@@ -64,12 +64,9 @@
                 <span>Add to album</span>
                 <div id="hover-content-add{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
-                     <li>Bed</li>
+                        {% for album in cards_possible_albums[user_card.id] %}
+                        <li><a class="album-item" href="{{ url_for('card.add_user_card_to_album', card_id=user_card.id, album_id=album.id) }}">{{ album.title }}</a></li>
+                        {% endfor %}
                     </ul>
             </div>
             </div>
@@ -80,7 +77,7 @@
                 <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
                         {% for album in user_card.albums %}
-                            <li><a class="album-item" href="1">{{ album.title }}</a></li>
+                            <li><a class="album-item" href="{{ url_for('card.remove_user_card_from_album', card_id=user_card.id, album_id=album.id) }}">{{ album.title }}</a></li>
                         {% endfor %}
                     </ul>
             </div>

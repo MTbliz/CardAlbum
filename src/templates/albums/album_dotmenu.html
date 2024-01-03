@@ -1,0 +1,148 @@
+<style>
+    .container{
+        place-items: center;
+    }
+    .group-menu{
+        cursor: pointer
+    }
+
+    .dot{
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: black;
+    margin-top: 4px;
+    }
+
+    .frame{
+        visibility: hidden;
+    }
+
+    .frame .info{
+        font-size: 15px;
+        color: white;
+        border-bottom: 1px solid white;
+        padding-top: 6px;
+        cursor: pointer;
+    }
+
+    .frame .info:hover{
+        background-color: #363333;
+    }
+
+    .frame .info span {
+        margin-left: 10px;
+    }
+
+    .style{
+        width: 105%;
+        height: 100%;
+        background-color: #111;
+        margin-top: 5px;
+        border-radius: 10px
+    }
+
+          .delete-card, .album-item {
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+  }
+
+
+</style>
+<div class="container">
+    <div class="group-menu" onclick="fun({{ user_card.id }})">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <!--end group-menu class end-->
+    <div class="frame" id="frame{{ user_card.id }}">
+
+        <div class="info">
+            <div id="parent-remove{{ user_card.id }}">
+                <span>Remove from album</span>
+                <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
+                    <ul class="list-categories">
+                        {% for album in user_card.albums %}
+                            <li><a class="album-item" href="{{ url_for('album.remove_user_card_from_album', card_id=user_card.id, album_id=album.id, album_title=album.title) }}">{{ album.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+            </div>
+            </div>
+        </div>
+        <a class="delete-card" href="{{ url_for('card.delete_user_card', id=user_card.id) }}">
+            <div class="info"><span> Delete Card</span></div>
+        </a>
+        <div class="info"><span>Sell</span></div>
+        <div class="info" onclick="remove({{ user_card.id }})"><span>Exit</span></div>
+    </div>
+    <!--end frame1 class end-->
+</div>
+<!--end container class end-->
+
+
+<script>
+
+  function fun(id){
+  var frame_id = "frame" + id
+
+    var elements = document.getElementsByClassName('frame');
+    var ids = Array.from(elements).map(frame => frame.id);
+
+    ids.forEach(function(id) {
+          if (document.getElementById(id).style.visibility === 'visible') {
+              var frame_to_close = id
+              document.getElementById(frame_to_close).classList.remove("style");
+              document.getElementById(frame_to_close).style.visibility="hidden"
+          }
+
+    });
+    document.getElementById(frame_id).style.visibility="visible"
+    document.getElementById(frame_id).classList.add("style");
+  }
+
+  function remove(id){
+  var frame_id = "frame" + id
+    document.getElementById(frame_id).classList.remove("style");
+    document.getElementById(frame_id).style.visibility="hidden"
+  }
+
+  function deleteCard(id) {
+    console.log(id)
+    fetch('card/' + id, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    });
+  }
+
+
+window.onload = function() {
+   var elements = document.getElementsByClassName('frame');
+   var frame_ids = Array.from(elements).map(frame => frame.id);
+
+   frame_ids.forEach(function(frame_id) {
+       let id = frame_id.split("frame")[1];
+       console.log(frame_id)
+
+       document.getElementById('parent-remove' + id).addEventListener('click', function() {
+          var hoverContent2 = document.getElementById('hover-content-remove' + id);
+          if (hoverContent2.style.display === 'none') {
+              hoverContent2.style.display = 'block';
+          } else {
+              hoverContent2.style.display = 'none';
+          }
+       });
+   });
+}
+
+
+
+
+</script>

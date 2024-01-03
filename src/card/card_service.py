@@ -91,7 +91,6 @@ class CardService:
         else:
             return 'colorless'
 
-
-
     def get_set_value_by_name(self, set_name):
         return self.card_repository.get_set_value_by_name(set_name)
+

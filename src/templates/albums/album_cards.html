@@ -1,0 +1,94 @@
+<div class="flex-container cards">
+{% for user_card in user_cards %}
+    <div class="card-container item" id="card_{{ user_card.id }}">
+        <div class="cards-dotmenu" style="position: absolute; margin-top:-20px">
+            {% include 'albums/album_dotmenu.html' %}
+        </div>
+        <div class="row" style="height: 90%">
+            <div class="col-auto">
+                <img src="{{ url_for('static', filename='img/' + user_card.card.title + '.jpg') }}" alt="Card image" class="hover-image">
+            </div>
+        </div>
+        <div class="row" style="height: 10%; border-top: 1px solid black; text-align: center;">
+            <div class="col-auto">
+                <p>Price: {{ user_card.price }} Amount: {{ user_card.availability }}</p>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+
+
+<style>
+
+.card-container {
+    background-color: white;
+    border: 2px solid #bacdd8;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 6px;
+    }
+
+.cards {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 2px solid #bacdd8;
+    justify-content: center;
+    max-width: 1200px;
+    padding: 2%;
+}
+
+img {
+ transition: all 0.5s ease;
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+}
+
+img:hover {
+ transform: scale(1.2);
+ position: relative
+}
+
+.hover-image {
+   transition: transform 0.3s ease-in-out;
+   z-index: 1;
+}
+
+.hover-image:hover {
+   transform: scale(1.5);
+   background-color: coral;
+   z-index: 2;
+}
+
+@media (max-width: 577px) {
+   .card-container {
+       width: 150px;
+       height: 225px;
+       font-size: 11px;
+   }
+
+   .flex-container {
+    margin-top: 60px;
+}
+
+    .cards-dotmenu{
+        margin-left: 120px;
+   }
+
+}
+
+@media (min-width: 578px) {
+   .card-container {
+       width: 200px;
+       height: 300px;
+       font-size: 16px;
+   }
+
+   .cards-dotmenu{
+        margin-left: 170px;
+   }
+</style>
+

@@ -2,8 +2,10 @@ from flask import request, render_template, session, redirect, url_for
 from src.models import Card, UserCard
 import os
 
+from src.album.album_service import AlbumService
 from src.card.cardDTO import CardDTO, UserCardDTO
 from src.card.card_service import CardService
+from src.album.album_service import AlbumService
 from src.card.user_card_service import UserCardService
 from src.card.forms import CardsFiltersForm, CardSearchForm, CreateCardForm
 
@@ -16,6 +18,7 @@ class CardsController:
     def __init__(self):
         self.card_service = CardService()
         self.user_card_service = UserCardService()
+        self.album_service = AlbumService()
 
     def cards(self):
         form = CardsFiltersForm()
@@ -63,10 +66,19 @@ class CardsController:
         field_sort = 'title'
         user_cards = self.user_card_service.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
 
+        user_albums = self.album_service.get_albums_by_user("user_id")
+        cards_possible_albums = {}
+        for user_card in user_cards:
+            card_albums = user_card.albums
+            possible_albums = [album for album in user_albums if album.id not in [card_album.id for card_album in card_albums]]
+            cards_possible_albums[user_card.id] = possible_albums
+
         return render_template('cards/cards_page.html',
                                user_cards=user_cards,
+                               cards_possible_albums=cards_possible_albums,
                                form=form,
-                               url_view="card.cards")
+                               url_view="card.cards",
+                               params={})
 
     def create_card(self):
         base_link = 'https://www.mtggoldfish.com/price'
@@ -152,6 +164,14 @@ class CardsController:
 
     def delete_user_card(self, id):
         self.user_card_service.delete_card(id)
+        return redirect(url_for('card.cards'))
+
+    def remove_user_card_from_album(self, card_id, album_id):
+        self.user_card_service.remove_user_card_from_album(card_id, album_id)
+        return redirect(url_for('card.cards'))
+
+    def add_user_card_to_album(self, card_id, album_id):
+        self.user_card_service.add_user_card_to_album(card_id, album_id)
         return redirect(url_for('card.cards'))
 
 

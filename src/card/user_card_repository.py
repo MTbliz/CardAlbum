@@ -1,4 +1,4 @@
-from src.models import UserCard, Card, CardDetails, CardSet, CardColorEnum, CardColor
+from src.models import UserCard, Card, CardDetails, CardSet, CardColorEnum, CardColor, Album
 from sqlalchemy import func, desc, and_, asc
 from src import db
 
@@ -41,3 +41,16 @@ class UserCardRepository:
     def check_if_user_card_exists(self, card_id, user):
         user_card = UserCard.query.filter_by(card_id=card_id).first()
         return True if user_card else False
+
+    def remove_user_card_from_album(self, card_id, album_id):
+        album = Album.query.get(album_id)
+        user_card = UserCard.query.get(card_id)
+        album.user_cards.remove(user_card)
+        db.session.commit()
+
+    def add_user_card_to_album(self, card_id, album_id):
+        album = Album.query.get(album_id)
+        user_card = UserCard.query.get(card_id)
+        album.user_cards.append(user_card)
+        db.session.commit()
+

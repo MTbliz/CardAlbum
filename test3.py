@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     with app.app_context():
         new_album = Album()
-        new_album.title = "TestAlbum"
+        new_album.title = "TestAlbum3"
 
         user_cards = UserCard.query.all()
 
