@@ -1,6 +1,7 @@
 from flask import request, session, redirect, url_for, render_template
 from src.models import Album
 
+from src.album.album_forms import CreateAlbumForm, DeleteAlbumForm
 from src.album.album_service import AlbumService
 from src.card.user_card_service import UserCardService
 from src.card.forms import CardsFiltersForm
@@ -67,10 +68,30 @@ class AlbumController:
                                params={"album_title": album_title})
 
     def create_album(self):
-        data = request.get_json()
-        album = Album(**data)
-        self.album_service.add_album(album)
-        return str(album), 201
+        form = CreateAlbumForm()
+        if form.validate_on_submit():
+            album = Album()
+            album.title = request.form['title']
+            self.album_service.add_album(album)
+            user_albums = session['user_albums']
+            user_albums.append(album.title)
+            session['user_albums'] = user_albums
+        return render_template('albums/create_album_page.html', form=form)
+
+    def delete_album(self):
+        albums = self.album_service.get_albums_by_user('user_id')
+        choices = [(album.id, album.title) for album in albums]
+        form = DeleteAlbumForm()
+        form.album.choices = choices
+        if form.validate_on_submit():
+            album_id = request.form.get('album')
+            album = self.album_service.get_album(album_id)
+            if album:
+                self.album_service.delete_album(album_id)
+                user_albums = session['user_albums']
+                user_albums.remove(album.title)
+                session['user_albums'] = user_albums
+        return render_template('albums/delete_album_page.html', form=form)
 
     def remove_user_card_from_album(self, card_id, album_id, album_title):
         self.user_card_service.remove_user_card_from_album(card_id, album_id)

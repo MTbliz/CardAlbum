@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main-container" style="
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}">
+
+    <div class="flex-container card" style="max-width: 900px;">
+        <div class="row container-row">
+            <div class="col-12 card-select">
+                <form method="post">
+                    <div>{{ form.hidden_tag() }}</div>
+                    <div class="form-field">{{ form.album.label }} {{ form.album() }}</div>
+                    <div class="form-field">{{ form.submit() }}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    background-color: white;
+    border: 2px solid #bacdd8;
+    padding: 10px;
+    border-radius: 12px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    }
+
+input[disabled] {
+    background-color: rgb(251, 251, 251);
+   }
+
+select[disabled] {
+    background-color: rgb(251, 251, 251);
+   }
+
+.container-row {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+}
+
+.form-field {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 10px;
+   height: 30px;
+}
+
+.form-field label {
+   text-align: right;
+   width: 120px;
+   margin-right: 10px;
+   height: 30px;
+}
+
+.form-field input, .form-field select {
+    height: 30px;
+   width: 100%;
+
+   border: 1px solid #ddd;
+   border-radius: 4px;
+}
+
+
+
+@media (min-width: 538px) {
+   .card-select{
+    border-right:2px solid #bacdd8;
+  }
+  }
+
+@media (max-width: 537px) {
+  .main-container{
+     margin-top: 60px;
+  }
+}
+
+</style>
+{% endblock %}

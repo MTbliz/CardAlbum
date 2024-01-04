@@ -26,6 +26,12 @@
                         <a href="{{ url_for('album.album_cards', album_title=album) }}" class="nav-link px-0"> <span class=" d-sm-inline small-screen">{{ album }}</span></a>
                     </li>
                 {% endfor %}
+                    <li class="w-100">
+                        <a href="{{ url_for('album.create_album') }}" class="nav-link px-0"> <span class=" d-sm-inline small-screen">Create Album</span></a>
+                    </li>
+                    <li class="w-100">
+                        <a href="{{ url_for('album.delete_album') }}" class="nav-link px-0"> <span class=" d-sm-inline small-screen">Delete Album</span></a>
+                    </li>
             </ul>
         </li>
         <li>

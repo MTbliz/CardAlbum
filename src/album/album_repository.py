@@ -34,19 +34,15 @@ class AlbumRepository:
             return query.paginate(page=page, per_page=ROWS_PER_PAGE, error_out=False)
 
 
-
-
-
-
-
     def add_album(self, album: Album):
         db.session.add(album)
         db.session.commit()
 
     def delete_album(self, album_id):
-        album = Album.query.filter_by(id=album_id).first()
+        album: Album = Album.query.filter_by(id=album_id).first()
         if not album:
             raise Exception("Album not found")
+        album.user_cards = []
         db.session.delete(album)
         db.session.commit()
 
