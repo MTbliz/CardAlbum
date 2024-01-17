@@ -1,4 +1,5 @@
 from flask import request, render_template, session, redirect, url_for
+from flask_login import current_user
 from src.models import Card, UserCard
 import os
 
@@ -64,9 +65,10 @@ class CardsController:
 
         order = 'asc'
         field_sort = 'title'
-        user_cards = self.user_card_service.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
+        user = current_user
+        user_cards = self.user_card_service.get_cards(user.id, field_sort, order, filters, page, ROWS_PER_PAGE)
 
-        user_albums = self.album_service.get_albums_by_user("user_id")
+        user_albums = self.album_service.get_albums_by_user(user.id)
         cards_possible_albums = {}
         for user_card in user_cards:
             card_albums = user_card.albums
@@ -114,11 +116,12 @@ class CardsController:
                 create_card_form.color.data = ",".join([card_color.color.value for card_color in card.card_details.colors])
 
         if create_card_form.validate_on_submit():
-            if not self.user_card_service.check_if_user_card_exists(card.id, "User"):
+            if not self.user_card_service.check_if_user_card_exists(card.id, current_user):
                 user_card_dto = UserCardDTO(card,
                                        create_card_form.price.data,
                                        create_card_form.availability.data,
-                                       create_card_form.quality.data)
+                                       create_card_form.quality.data,
+                                            current_user.id)
                 user_card = user_card_dto.to_user_card()
                 self.user_card_service.add_card(user_card)
             else:

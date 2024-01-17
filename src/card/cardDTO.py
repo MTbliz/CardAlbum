@@ -36,11 +36,12 @@ class CardDTO:
 
 class UserCardDTO:
 
-    def __init__(self, card, price, availability, quality):
+    def __init__(self, card, price, availability, quality, user_id):
         self.card = card
         self.price = price
         self.availability = availability
         self.quality = quality
+        self.user_id = user_id
 
     def to_user_card(self):
         quality = self.quality
@@ -49,4 +50,5 @@ class UserCardDTO:
         user_card.availability = self.availability
         user_card.quality = quality
         user_card.card = self.card
+        user_card.user_id = self.user_id
         return user_card

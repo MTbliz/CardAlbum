@@ -1,5 +1,5 @@
 from flask import Flask
-from src.extensions import db
+from src.extensions import db, login_manager
 from configuration import DevConfig
 from src.main.routes import bp as main_bp
 from src.album.album_routes import bp as album_bp
@@ -12,6 +12,9 @@ def create_app(config_class=DevConfig):
 
     # Initialize Flask extensions
     db.init_app(app)
+    login_manager.login_view = 'main.login'
+    login_manager.init_app(app)
+
     with app.app_context():
         db.create_all()
 

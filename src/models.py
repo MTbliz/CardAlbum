@@ -1,6 +1,8 @@
-from src import db
+from src import db, login_manager
 import enum
 from sqlalchemy import Enum
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class CardSet(enum.Enum):
@@ -82,6 +84,7 @@ class Album(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(db.String(), nullable=False)
     user_cards = db.relationship("UserCard", secondary=albums_user_cards, backref='albums')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class UserCard(db.Model):
@@ -94,6 +97,7 @@ class UserCard(db.Model):
     availability = db.Column(db.Integer(), nullable=False)
     quality = db.Column(Enum(CardQuality))
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Card(db.Model):
@@ -129,6 +133,47 @@ class CardColor(db.Model):
 
     id = db.Column(db.Integer(), primary_key=True)
     color = db.Column(Enum(CardColorEnum), nullable=False)
+
+
+class User(UserMixin, db.Model):
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128))
+    user_albums = db.relationship('Album', backref='user')
+    user_cards = db.relationship('UserCard', backref='user')
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@login_manager.request_loader
+def request_loader(request):
+    email = request.form.get('email')
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return user
+    else:
+        return None
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized', 401
+
+
+
 
 
 

@@ -5,9 +5,9 @@ from src import db
 
 class UserCardRepository:
 
-    def get_cards(self, field_sort, order, filters, page, ROWS_PER_PAGE):
+    def get_cards(self, user_id, field_sort, order, filters, page, ROWS_PER_PAGE):
         if order == "asc":
-            query = UserCard.query.join(Card).join(CardDetails)
+            query = UserCard.query.filter_by(user_id=user_id).join(Card).join(CardDetails)
 
             # Apply the filters
             for attr, value in filters.items():
@@ -33,13 +33,14 @@ class UserCardRepository:
 
     def delete_card(self, user_card_id):
         user_card = UserCard.query.filter_by(id=user_card_id).first()
+        user_card.user = None
         if not user_card:
             raise Exception("Card not found")
         db.session.delete(user_card)
         db.session.commit()
 
     def check_if_user_card_exists(self, card_id, user):
-        user_card = UserCard.query.filter_by(card_id=card_id).first()
+        user_card = UserCard.query.filter_by(card_id=card_id, user_id=user.id).first()
         return True if user_card else False
 
     def remove_user_card_from_album(self, card_id, album_id):

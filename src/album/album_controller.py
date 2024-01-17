@@ -1,5 +1,6 @@
 from flask import request, session, redirect, url_for, render_template
-from src.models import Album
+from flask_login import current_user
+from src.models import Album, User
 
 from src.album.album_forms import CreateAlbumForm, DeleteAlbumForm
 from src.album.album_service import AlbumService
@@ -72,6 +73,7 @@ class AlbumController:
         if form.validate_on_submit():
             album = Album()
             album.title = request.form['title']
+            album.user_id = current_user.id
             self.album_service.add_album(album)
             user_albums = session['user_albums']
             user_albums.append(album.title)
@@ -79,7 +81,7 @@ class AlbumController:
         return render_template('albums/create_album_page.html', form=form)
 
     def delete_album(self):
-        albums = self.album_service.get_albums_by_user('user_id')
+        albums = self.album_service.get_albums_by_user(current_user.id)
         choices = [(album.id, album.title) for album in albums]
         form = DeleteAlbumForm()
         form.album.choices = choices

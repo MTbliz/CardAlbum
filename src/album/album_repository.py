@@ -1,5 +1,5 @@
 from src.models import Album, UserCard, CardSet, CardColor, CardMana, Card, CardDetails, CardColorEnum,\
-    albums_user_cards
+    albums_user_cards, User
 from src import db
 
 
@@ -48,7 +48,8 @@ class AlbumRepository:
 
     def get_ablums_by_user(self, user_id):
         # Add filter by user_id when user will be availabe in app
-        albums = Album.query.all()
+        user = User.query.get(user_id)
+        albums = user.user_albums
         return albums
 
     def get_albums_by_user_card(self, card_id):

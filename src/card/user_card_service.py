@@ -6,8 +6,8 @@ class UserCardService:
     def __init__(self):
         self.user_card_repository = UserCardRepository()
 
-    def get_cards(self, field_sort, order, filters, page, ROWS_PER_PAGE):
-        return self.user_card_repository.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
+    def get_cards(self,user_id, field_sort, order, filters, page, ROWS_PER_PAGE):
+        return self.user_card_repository.get_cards(user_id, field_sort, order, filters, page, ROWS_PER_PAGE)
 
     def get_card(self, card_id):
         return self.user_card_repository.get_card(card_id)
