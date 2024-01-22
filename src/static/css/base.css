@@ -1,3 +1,26 @@
+  .cart-icon {
+      bottom: 4px;
+      right: 8px;
+      position: relative;
+      /* other styles */
+  }
+
+  #cart-quantity {
+      position: absolute;
+      top: 70%;
+      left: 12px;
+      background-color: red;
+      border-radius: 50%;
+      color: white;
+      font-size: 11px;
+      height: 18px; /* adjust as needed */
+      width: 18px; /* adjust as needed */
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+  }
+
+
 .flashes {
   z-index: 10000;
   margin-top: 60px;

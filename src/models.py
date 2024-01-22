@@ -98,6 +98,7 @@ class UserCard(db.Model):
     quality = db.Column(Enum(CardQuality))
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    basket_items = db.relationship('BasketItem', backref='user_card')
 
 
 class Card(db.Model):
@@ -145,6 +146,11 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(128))
     user_albums = db.relationship('Album', backref='user')
     user_cards = db.relationship('UserCard', backref='user')
+    basket = db.relationship('Basket', backref='user', uselist=False)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.basket = Basket()
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -171,6 +177,25 @@ def request_loader(request):
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return 'Unauthorized', 401
+
+
+class Basket(db.Model):
+
+    __tablename__ = 'baskets'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    basket_items = db.relationship('BasketItem', backref='basket')
+
+
+class BasketItem(db.Model):
+
+    __tablename__ = 'basket_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    basket_id = db.Column(db.Integer, db.ForeignKey('baskets.id'))
+    user_card_id = db.Column(db.Integer, db.ForeignKey('user_cards.id'))
+    quantity = db.Column(db.Integer)
 
 
 

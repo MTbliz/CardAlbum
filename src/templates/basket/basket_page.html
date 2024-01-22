@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div>
+            <form action="{{ url_for('basket.clear_basket') }}" method="post">
+                <button type="submit" class="btn btn-outline-secondary" style="float: right;">Clear Basket</button>
+            </form>
+            <table class="table caption-top">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Card Title</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quality</th>
+                    <th scope="col">Img</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in basket_items.items %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ item.user_card.card.title }}</td>
+                    <td><input type="number" id="quantity_{{ item.id }}" value="{{ item.quantity }}"></td>
+                    <td>{{ item.user_card.price }}</td>
+                    <td>{{ item.user_card.quality.value }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename='img/' + item.user_card.card.title + '.jpg') }}"
+                             alt="Card image" style="width:100px; height:auto;">
+                    </td>
+                    <td>
+                        <form id="deleteForm-{{item.id}}"
+                              action="{{ url_for('basket.delete_basket_item', basket_id=item.basket_id, basket_item_id=item.id) }}"
+                              method="post" style="display: none;">
+                            <input type="hidden" name="id" value="{{ item.id }}">
+                        </form>
+                        <i class="fs-4 bi bi-basket3"
+                           onclick="document.getElementById('deleteForm-{{item.id}}').submit();"></i>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            {% with paginated_data=basket_items %}
+            {% include 'pagination.html'%}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+<hr style="width:100%; text-align:center; border:1px solid gray;">
+<div class="container summarize">
+    <div class="row">
+
+        <form method="post">
+            <span>{{ form.hidden_tag() }}</span>
+            <span class="form-field">{{ form.total_price.label }} {{ form.total_price() }}</span>
+            <span class="form-field">{{ form.customer.label }} {{ form.customer() }}</span>
+            <span class="form-field">{{ form.submit() }}</span>
+        </form>
+    </div>
+
+</div>
+<div class="row" style="max-width:1220px">
+    <br>
+    <br>
+</div>
+<style>
+    .sum-item {
+      display: flex;
+   flex-direction: column;
+   align-items: center;
+    }
+
+    .form-field {
+    margin-right: 30px;
+}
+
+
+
+
+
+</style>
+<script>
+
+// Initialize an array to store the initial quantities
+var initialQuantities = [];
+
+// Get all quantity input fields
+var quantityInputs = document.querySelectorAll('input[id^="quantity_"]');
+
+// Populate the initialQuantities array with the initial quantities
+quantityInputs.forEach(function(input, index) {
+    initialQuantities.push(input.value);
+});
+
+// Attach an event listener to each quantity input field
+quantityInputs.forEach(function(input, index) {
+    input.addEventListener('change', function() {
+
+        // Calculate the new total
+        var newTotal = 0;
+        for (let i = 0; i < quantityInputs.length; i++) {
+            var newQuantity = quantityInputs[i].value;
+            var items = []
+
+            {% for item in basket_items.items %}
+                items.push(parseFloat("{{ item.user_card.price }}").toFixed(2));
+            {% endfor %}
+
+            var price = items[i];
+            var newProduct = newQuantity * price;
+            newTotal += newProduct;
+        }
+
+        // Update the total
+        document.getElementById('total_price').value = parseFloat(newTotal).toFixed(2);
+
+        var item_id = this.id
+        var quantity = document.getElementById(item_id).value;
+        var basket_id = "{{ basket_items.items | map(attribute='basket_id') |first }}"
+        basket_item_id = item_id.split("_")[1]
+        update_basket_item(basket_id, basket_item_id, quantity)
+    });
+});
+
+
+  function update_basket_item(basket_id, basket_item_id, quantity) {
+   fetch(`/basket/${basket_id}/item/${basket_item_id}/quantity/${quantity}`, {
+       method: 'POST'
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw new Error('Network response was not ok');
+       }
+       return response.json()
+   })
+   .then(data => {
+    var new_basket_count = data.basket_count
+    var basketCountElement = document.querySelector('#cart-quantity');
+        basketCountElement.textContent = parseInt(new_basket_count);
+    })
+   .catch(error => {
+       console.error('There has been a problem with your fetch operation:', error);
+   });
+}
+
+
+
+
+
+
+</script>
+{% endblock %}
+
+

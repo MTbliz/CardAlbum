@@ -50,6 +50,7 @@
   }
 
 
+
 </style>
 <div class="container">
     <div class="group-menu" onclick="fun({{ user_card.id }})">
@@ -65,10 +66,14 @@
                 <div id="hover-content-add{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
                         {% for album in cards_possible_albums[user_card.id] %}
-                        <li><a class="album-item" href="{{ url_for('card.add_user_card_to_album', card_id=user_card.id, album_id=album.id) }}">{{ album.title }}</a></li>
+                        <li>
+                            <a class="album-item" href="{{ url_for('card.add_user_card_to_album', card_id=user_card.id, album_id=album.id) }}">
+                                {{ album.title }}
+                            </a>
+                        </li>
                         {% endfor %}
                     </ul>
-            </div>
+                </div>
             </div>
         </div>
         <div class="info">
@@ -77,10 +82,12 @@
                 <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
                         {% for album in user_card.albums %}
-                            <li><a class="album-item" href="{{ url_for('card.remove_user_card_from_album', card_id=user_card.id, album_id=album.id) }}">{{ album.title }}</a></li>
+                        <li><a class="album-item"
+                               href="{{ url_for('card.remove_user_card_from_album', card_id=user_card.id, album_id=album.id) }}">{{
+                            album.title }}</a></li>
                         {% endfor %}
                     </ul>
-            </div>
+                </div>
             </div>
         </div>
         <a class="delete-card" href="{{ url_for('card.delete_user_card', id=user_card.id) }}">
@@ -160,6 +167,7 @@ window.onload = function() {
        });
    });
 }
+
 
 
 

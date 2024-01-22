@@ -1,8 +1,10 @@
 from flask import render_template, session, request, redirect, url_for, jsonify, flash
 from flask_login import login_user, logout_user, current_user
+from sqlalchemy import func
 
 from src.album.album_service import AlbumService
-from src.models import User
+from src.basket.basket_service import BasketService
+from src.models import User, Basket, BasketItem
 from src import db
 
 
@@ -10,11 +12,17 @@ class MainController:
 
     def __init__(self):
         self.album_service = AlbumService()
+        self.basket_service = BasketService()
 
     def root(self):
         if current_user.is_authenticated:
             user_albums = self.album_service.get_albums_by_user(current_user.id)
             session['user_albums'] = [user_album.title for user_album in user_albums]
+
+            basket_count = BasketItem.query.join(Basket).filter(Basket.user_id==current_user.id).with_entities(func.sum(BasketItem.quantity)).scalar()
+            if basket_count is None:
+                basket_count = 0
+            session['basket_count'] = basket_count
             return render_template("base.html")
         else:
             return redirect(url_for('main.login'))

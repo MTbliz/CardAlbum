@@ -42,12 +42,13 @@
         border-radius: 10px
     }
 
-          .delete-card, .album-item {
+          .delete-card, .album-item, .sell-card {
     color: inherit;
     text-decoration: none;
     width: 100%;
     height: 100%;
   }
+
 
 
 </style>
@@ -66,16 +67,18 @@
                 <div id="hover-content-remove{{ user_card.id }}" style="display:none;">
                     <ul class="list-categories">
                         {% for album in user_card.albums %}
-                            <li><a class="album-item" href="{{ url_for('album.remove_user_card_from_album', card_id=user_card.id, album_id=album.id, album_title=album.title) }}">{{ album.title }}</a></li>
+                        <li><a class="album-item"
+                               href="{{ url_for('album.remove_user_card_from_album', card_id=user_card.id, album_id=album.id, album_title=album.title) }}">{{
+                            album.title }}</a></li>
                         {% endfor %}
                     </ul>
-            </div>
+                </div>
             </div>
         </div>
         <a class="delete-card" href="{{ url_for('card.delete_user_card', id=user_card.id) }}">
             <div class="info"><span> Delete Card</span></div>
         </a>
-        <div class="info"><span>Sell</span></div>
+        <div class="info" onclick="sell({{user_card.id}}, {{user_card.user.basket.id}})"><span>Sell</span></div>
         <div class="info" onclick="remove({{ user_card.id }})"><span>Exit</span></div>
     </div>
     <!--end frame1 class end-->
@@ -111,6 +114,37 @@
 
   function deleteCard(id) {
     console.log(id)
+    fetch('/basket' + id, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    });
+  }
+
+  function sell(user_card_id, basket_id) {
+   fetch(`/basket/${basket_id}/add/${user_card_id}`, {
+       method: 'POST'
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw new Error('Network response was not ok');
+       }
+       window.location.reload();
+   })
+   .catch(error => {
+       console.error('There has been a problem with your fetch operation:', error);
+   });
+}
+
+
+
+
+  function deleteCard(id) {
+    console.log(id)
     fetch('card/' + id, {
     method: 'GET',
     headers: {
@@ -141,6 +175,7 @@ window.onload = function() {
        });
    });
 }
+
 
 
 
