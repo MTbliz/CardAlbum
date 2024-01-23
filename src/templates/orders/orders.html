@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div>
+            <table class="table caption-top">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Seller</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">State</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.user.email}}</td>
+                    <td>{{ order.customer.email }}</td>
+                    <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:00') }}</td>
+                    <td>{% if current_user.id == order.user_id %}
+                            Seller
+                        {% else %}
+                            Customer
+                        {% endif %}
+                    </td>
+                    <td>{{ order.order_state.value }}</td>
+                    <td>
+                        <a class="delete-card" href="{{ url_for('order.get_order', order_id=order.id) }}">
+                            <div class="info"><i class="bi bi-journal-text"></i></div>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            {% with paginated_data=orders %}
+            {% include 'pagination.html'%}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

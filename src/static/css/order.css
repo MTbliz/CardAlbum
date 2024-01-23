@@ -1,0 +1,116 @@
+
+/* order.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+
+.container {
+    margin: 20px auto;
+}
+
+.progress-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#progressbar {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    color: lightgrey;
+}
+
+#progressbar li {
+    flex: 1;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    position: relative;
+}
+
+#progressbar li.active {
+    color: #2F8D46;
+}
+
+.progress {
+    height: 20px;
+    background-color: lightgray;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #2F8D46;
+    width: 0;
+    height: 100%;
+    transition: width 0.4s ease-in-out;
+}
+
+.step-container fieldset {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding-bottom: 20px;
+    position: relative;
+    display: none;
+}
+
+.step-container fieldset:first-of-type {
+    display: block;
+}
+
+h2 {
+    color: #2F8D46;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.next-step,
+.previous-step {
+    width: 100px;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px 10px 0px;
+    float: right;
+}
+
+.next-step {
+    background: #2F8D46;
+}
+
+.previous-step {
+    background: #616161;
+}
+
+.next-step:hover,
+.next-step:focus {
+    background-color: #1e6f3e;
+}
+
+.previous-step:hover,
+.previous-step:focus {
+    background-color: #4d4d4d;
+}
+
+.text {
+    color: #2F8D46;
+    font-weight: normal;
+}
+
+.finish {
+    text-align: center;
+}

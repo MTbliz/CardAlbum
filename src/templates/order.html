@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order.css')}}">
+
+<div class="container">
+    <div class="progress-container">
+        <ul id="progressbar">
+            <li id="step1" class="{{ 'active' if order.order_state.name == 'STATUS_1' else '' }}">
+                <strong>Started</strong>
+            </li>
+            <li id="step2" class="{{ 'active' if order.order_state.name == 'STATUS_2' else '' }}">
+                <strong>Accepted</strong>
+            </li>
+            <li id="step3" class="{{ 'active' if order.order_state.name == 'STATUS_3' else '' }}">
+                <strong>Sent</strong>
+            </li>
+            <li id="step4" class="{{ 'active' if order.order_state.name == 'STATUS_4' else '' }}">
+                <strong>Delivered</strong>
+            </li>
+            <li id="step5" class="{{ 'active' if order.order_state.name == 'STATUS_5' else '' }}">
+                <strong>Finalized</strong>
+            </li>
+        </ul>
+        <div class="progress">
+            <div class="progress-bar" style="width:{{ progress_percent }}%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div>
+            <table class="table caption-top">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Card Title</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quality</th>
+                    <th scope="col">Img</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in order_items.items %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ item.user_card.card.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.user_card.price }}</td>
+                    <td>{{ item.user_card.quality.value }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename='img/' + item.user_card.card.title + '.jpg') }}"
+                             alt="Card image" style="width:100px; height:auto;">
+                    </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            {% with paginated_data=order_items %}
+            {% include 'pagination.html'%}
+            {% endwith %}
+        </div>
+    </div>
+    <hr style="width:100%; text-align:center; border:1px solid gray;">
+    <div>
+        <form action="{{ url_for('order.next_order_state', order_id=order.id) }}" method="post">
+            <span class="order-total">Total: {{ total_price }}</span>
+            <button type="submit" class="btn btn-outline-success" style="float: right;">Accept</button>
+        </form>
+    </div>
+    <div class="row" style="max-width:1220px">
+        <br>
+        <br>
+    </div>
+</div>
+
+{% endblock %}

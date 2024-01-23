@@ -69,7 +69,7 @@ class MainController:
         return render_template('signup.html')
 
     def profile(self):
-        return render_template('profile.html')
+        return render_template('order.html')
 
 
 

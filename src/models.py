@@ -66,6 +66,15 @@ class CardQuality(enum.Enum):
     POOR = 'Poor'
 
 
+class OrderStateSet(enum.Enum):
+
+    STATUS_1 = "Started"
+    STATUS_2 = "Accepted"
+    STATUS_3 = "Sent"
+    STATUS_4 = "Delivered"
+    STATUS_5 = "Finalized"
+
+
 albums_user_cards = db.Table('albums_user_cards', db.Model.metadata,
                              db.Column('album_id', db.Integer, db.ForeignKey('albums.id')),
                              db.Column('user_card_id', db.Integer, db.ForeignKey('user_cards.id'))
@@ -99,6 +108,7 @@ class UserCard(db.Model):
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     basket_items = db.relationship('BasketItem', backref='user_card')
+    order_items = db.relationship('OrderItem', backref='user_card')
 
 
 class Card(db.Model):
@@ -197,6 +207,36 @@ class BasketItem(db.Model):
     user_card_id = db.Column(db.Integer, db.ForeignKey('user_cards.id'))
     quantity = db.Column(db.Integer)
 
+    @property
+    def total_price(self):
+        return self.quantity * self.user_card.price
+
+
+class Order(db.Model):
+
+    __tablename__ = "orders"
+
+    id = db.Column(db.Integer(), primary_key=True)
+
+    total_price = db.Column(db.Float(), nullable=False)
+    order_items = db.relationship('OrderItem', backref='order')
+    order_state = db.Column(Enum(OrderStateSet))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    customer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    order_date = db.Column(db.DateTime, nullable=False)
+
+    user = db.relationship('User', backref='orders_as_seller', foreign_keys=[user_id])
+    customer = db.relationship('User', backref='orders_as_customer', foreign_keys=[customer_id])
+
+
+class OrderItem(db.Model):
+
+    __tablename__ = 'order_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
+    user_card_id = db.Column(db.Integer, db.ForeignKey('user_cards.id'))
+    quantity = db.Column(db.Integer)
 
 
 

@@ -4,12 +4,14 @@ from src import db
 from src.models import User, UserCard, Basket, BasketItem
 from src.basket.basket_forms import BasketSellForm
 from src.basket.basket_service import BasketService
+from src.order.order_service import OrderService
 
 
 class BasketController:
 
     def __init__(self):
         self.basket_service = BasketService()
+        self.order_service = OrderService()
 
     def get_basket(self):
         page = request.args.get('page', 1, type=int)
@@ -26,6 +28,8 @@ class BasketController:
 
         if form.validate_on_submit():
             user_id = current_user.id
+            customer_id =request.form.get("customer")
+            self.order_service.create_order(user_id, int(customer_id))
             self.basket_service.clear_basket(user_id)
             session['basket_count'] = 0
             flash("Order created successfully", "success")

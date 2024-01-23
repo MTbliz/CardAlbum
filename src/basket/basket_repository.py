@@ -10,6 +10,10 @@ class BasketRepository:
         basket = Basket.query.get(basket_id)
         return basket
 
+    def get_basket_by_user(self, user_id):
+        basket = Basket.query.filter_by(user_id=user_id).first()
+        return basket
+
     def add_user_card_to_basket(self, basket_id, user_card_id):
         basket = Basket.query.get(basket_id)
         basket_item: BasketItem = BasketItem.query.filter_by(user_card_id=user_card_id).first()
