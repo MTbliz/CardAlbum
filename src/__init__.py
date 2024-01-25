@@ -1,10 +1,11 @@
 from flask import Flask
 from src.extensions import db, login_manager
+
 from configuration import DevConfig
-from src.main.routes import bp as main_bp
 from src.album.album_routes import bp as album_bp
-from src.card.card_routes import bp as card_bp
 from src.basket.basket_routes import bp as basket_bp
+from src.card.card_routes import bp as card_bp
+from src.main.routes import bp as main_bp
 from src.order.order_routes import bp as order_bp
 
 

@@ -1,8 +1,5 @@
-import os
-
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, StringField, DecimalField, IntegerField, FileField
-from wtforms.validators import ValidationError
+from wtforms import SelectField, SubmitField, DecimalField
 
 
 class BasketSellForm(FlaskForm):

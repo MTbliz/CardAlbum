@@ -3,6 +3,7 @@ import os
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField, StringField, DecimalField, IntegerField, FileField
 from wtforms.validators import ValidationError
+
 from src.models import CardColorEnum, CardRarity, CardSet, CardMana, CardQuality
 
 
@@ -48,5 +49,3 @@ class CreateCardForm(FlaskForm):
     def validate_rarity(self, field):
         if not CardRarity(str(field.data)).value:
             raise ValidationError("Invalid rarity input.")
-
-

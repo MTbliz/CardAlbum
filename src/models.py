@@ -1,12 +1,14 @@
-from src import db, login_manager
 import enum
-from sqlalchemy import Enum
+from typing import Optional
+
 from flask_login import UserMixin
+from sqlalchemy import Enum
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from src import db, login_manager
 
 
 class CardSet(enum.Enum):
-
     ALL = 'All'
     SET1 = "Wilds of Eldraine"
     SET2 = "March of the Machine: The Aftermath"
@@ -21,7 +23,6 @@ class CardSet(enum.Enum):
 
 
 class CardRarity(enum.Enum):
-
     ALL = 'All'
     COMMON = 'Common'
     UNCOMMON = 'Uncommon'
@@ -30,7 +31,6 @@ class CardRarity(enum.Enum):
 
 
 class CardColorEnum(enum.Enum):
-
     ALL = 'All'
     BLACK = 'black'
     BLUE = 'blue'
@@ -41,7 +41,6 @@ class CardColorEnum(enum.Enum):
 
 
 class CardMana(enum.Enum):
-
     ALL = 'All'
     ZERO = '0'
     ONE = '1'
@@ -57,7 +56,6 @@ class CardMana(enum.Enum):
 
 
 class CardQuality(enum.Enum):
-
     MINT = 'Mint'
     NEAR_MINT = 'Near Mint'
     GOOD_LIGHTLY_PLAYED = 'Good (Lightly Played)'
@@ -67,7 +65,6 @@ class CardQuality(enum.Enum):
 
 
 class OrderStateSet(enum.Enum):
-
     STATUS_1 = "Started"
     STATUS_2 = "Accepted"
     STATUS_3 = "Sent"
@@ -81,13 +78,14 @@ albums_user_cards = db.Table('albums_user_cards', db.Model.metadata,
                              )
 
 colors_card_details = db.Table('colors_card_details', db.Model.metadata,
-                               db.Column("card_color_id", db.Integer, db.ForeignKey('card_colors.id'), primary_key=True),
-                               db.Column('card_details_id', db.Integer, db.ForeignKey('card_details.id'), primary_key=True)
-                      )
+                               db.Column("card_color_id", db.Integer, db.ForeignKey('card_colors.id'),
+                                         primary_key=True),
+                               db.Column('card_details_id', db.Integer, db.ForeignKey('card_details.id'),
+                                         primary_key=True)
+                               )
 
 
 class Album(db.Model):
-
     __tablename__ = "albums"
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -97,7 +95,6 @@ class Album(db.Model):
 
 
 class UserCard(db.Model):
-
     __tablename__ = "user_cards"
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -112,7 +109,6 @@ class UserCard(db.Model):
 
 
 class Card(db.Model):
-
     __tablename__ = "cards"
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -126,7 +122,6 @@ class Card(db.Model):
 
 
 class CardDetails(db.Model):
-
     __tablename__ = "card_details"
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -139,7 +134,6 @@ class CardDetails(db.Model):
 
 
 class CardColor(db.Model):
-
     __tablename__ = 'card_colors'
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -147,7 +141,6 @@ class CardColor(db.Model):
 
 
 class User(UserMixin, db.Model):
-
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -158,26 +151,26 @@ class User(UserMixin, db.Model):
     user_cards = db.relationship('UserCard', backref='user')
     basket = db.relationship('Basket', backref='user', uselist=False)
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.basket = Basket()
+        self.basket: Basket = Basket()
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
+    def set_password(self, password) -> None:
+        self.password: str = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password) -> bool:
         return check_password_hash(self.password, password)
 
 
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id) -> User:
     return User.query.get(int(user_id))
 
 
 @login_manager.request_loader
-def request_loader(request):
-    email = request.form.get('email')
-    user = User.query.filter_by(email=email).first()
+def request_loader(request) -> Optional[User]:
+    email: str = request.form.get('email')
+    user: User = User.query.filter_by(email=email).first()
     if user:
         return user
     else:
@@ -185,12 +178,11 @@ def request_loader(request):
 
 
 @login_manager.unauthorized_handler
-def unauthorized_handler():
+def unauthorized_handler() -> str:
     return 'Unauthorized', 401
 
 
 class Basket(db.Model):
-
     __tablename__ = 'baskets'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -199,7 +191,6 @@ class Basket(db.Model):
 
 
 class BasketItem(db.Model):
-
     __tablename__ = 'basket_items'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -208,12 +199,11 @@ class BasketItem(db.Model):
     quantity = db.Column(db.Integer)
 
     @property
-    def total_price(self):
+    def total_price(self) -> float:
         return self.quantity * self.user_card.price
 
 
 class Order(db.Model):
-
     __tablename__ = "orders"
 
     id = db.Column(db.Integer(), primary_key=True)
@@ -230,16 +220,9 @@ class Order(db.Model):
 
 
 class OrderItem(db.Model):
-
     __tablename__ = 'order_items'
 
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
     user_card_id = db.Column(db.Integer, db.ForeignKey('user_cards.id'))
     quantity = db.Column(db.Integer)
-
-
-
-
-
-
