@@ -8,14 +8,14 @@
         </div>
     </div>
     <div class="row">
-        <div >
+        <div>
             {% include 'cards.html' %}
         </div>
     </div>
-        <div class="row">
-        <div >
+    <div class="row">
+        <div>
             {% with paginated_data=user_cards %}
-                {% include 'pagination.html'%}
+            {% include 'pagination.html'%}
             {% endwith %}
         </div>
     </div>

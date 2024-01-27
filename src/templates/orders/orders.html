@@ -27,9 +27,9 @@
                     <td>{{ order.customer.email }}</td>
                     <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:00') }}</td>
                     <td>{% if current_user.id == order.user_id %}
-                            Seller
+                        Seller
                         {% else %}
-                            Customer
+                        Customer
                         {% endif %}
                     </td>
                     <td>{{ order.order_state.value }}</td>
@@ -53,5 +53,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

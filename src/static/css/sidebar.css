@@ -1,0 +1,14 @@
+.nav-link {
+    color: black;
+}
+
+.small-screen {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .small-screen {
+        display: inline;
+        font-size: 9px;
+    }
+}

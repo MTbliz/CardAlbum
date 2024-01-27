@@ -1,0 +1,9 @@
+.sum-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-field {
+    margin-right: 30px;
+}

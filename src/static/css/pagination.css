@@ -1,0 +1,15 @@
+.pagination {
+    margin-top: 10px;
+}
+
+.num-pages {
+    text-align: left;
+    margin-top: 10px;
+    float: right;
+}
+
+.pagination-container {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}

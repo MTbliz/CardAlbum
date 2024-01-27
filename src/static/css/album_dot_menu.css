@@ -1,0 +1,50 @@
+.container {
+    place-items: center;
+}
+
+.group-menu {
+    cursor: pointer
+}
+
+.dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: black;
+    margin-top: 4px;
+}
+
+.frame {
+    visibility: hidden;
+}
+
+.frame .info {
+    font-size: 15px;
+    color: white;
+    border-bottom: 1px solid white;
+    padding-top: 6px;
+    cursor: pointer;
+}
+
+.frame .info:hover {
+    background-color: #363333;
+}
+
+.frame .info span {
+    margin-left: 10px;
+}
+
+.style {
+    width: 105%;
+    height: 100%;
+    background-color: #111;
+    margin-top: 5px;
+    border-radius: 10px
+}
+
+.delete-card, .album-item, .sell-card {
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
