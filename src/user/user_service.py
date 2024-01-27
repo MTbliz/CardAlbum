@@ -4,7 +4,7 @@ from src.user.user_repository import UserRepository
 
 class UserService:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.user_repository: UserRepository = UserRepository()
 
     def get_possible_customers(self, user_id: int) -> list[User]:

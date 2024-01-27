@@ -1,12 +1,11 @@
-import os
-from typing import Union, Optional
+from typing import Union
 
 from flask import request, render_template, session, redirect, url_for
 from flask_login import current_user
 from werkzeug.wrappers import Response
 
 from src.album.album_service import AlbumService
-from src.card.cardDTO import CardDTO, UserCardDTO
+from src.card.cardDTO import UserCardDTO
 from src.card.card_service import CardService
 from src.card.forms import CardsFiltersForm, CardSearchForm, CreateCardForm
 from src.card.user_card_service import UserCardService
@@ -101,12 +100,22 @@ class CardsController:
         search_form.set.data = searched_set
 
         card_image: str = 'img/img.jpg'
-        if searched_title != "":
 
-            if self.card_service.check_if_card_exist(searched_title):
+        if searched_title != "":
+            set_value: str = self.card_service.get_set_value_by_name(searched_set)
+
+            if self.card_service.check_if_card_exist(searched_title, searched_set):
                 card: Card = self.card_service.get_card_by_title(searched_title)
+            elif self.card_service.is_card_title_available(searched_title):
+                card: Card = None
             else:
-                card: Card = self._save_or_get_card(base_link, searched_title, searched_set)  # Tu wrócić i poprawić
+                response = self.card_service.get_card_data_from_url(base_link, set_value, searched_title)
+                if response.get('status_code') == 200:
+                    card_details: dict[str, any] = response.get('body')
+                    self.card_service.save_card(searched_title, set_value, card_details)
+                    card: Card = self.card_service.get_card_by_title(searched_title)
+                else:
+                    card: Card = None
             if card:
                 card_image: str = f"img/{searched_title}.jpg"
                 create_card_form.title.data = searched_title
@@ -131,32 +140,6 @@ class CardsController:
 
         return render_template('cards/create_card_page.html', form=search_form, create_card_form=create_card_form,
                                card_image=card_image)
-
-    def _save_or_get_card(self, base_link: str, searched_title: str, searched_set: str) -> Optional[Card]:
-
-        response: dict[str, any] = self.card_service.get_card_details_from_url(
-            base_link,
-            self.card_service.get_set_value_by_name(searched_set),
-            searched_title)
-
-        if response.get('status_code') == 200:
-            card_details: dict[str, any] = response.get('body')
-            if not os.path.exists(f'src/static/img/{searched_title}.jpg'):
-                with open(f'src/static/img/{searched_title}.jpg', 'wb') as f:
-                    f.write(card_details.get('img_data'))
-
-            card_dto: CardDTO = CardDTO(searched_title,
-                                        card_details.get('color').split(","),
-                                        card_details.get('mana_cost'),
-                                        card_details.get('rarity'),
-                                        self.card_service.get_set_value_by_name(searched_set),
-                                        card_details.get('type')
-                                        )
-            card: Card = card_dto.to_card()
-            self.card_service.add_card(card)
-        else:
-            card = None
-        return card
 
     def store_or_clear_endpoint(self) -> None:
         if session.get('previous_endpoint') != request.endpoint:

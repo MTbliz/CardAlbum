@@ -1,10 +1,12 @@
 import os
+from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
 from bs4 import Tag
 from requests.models import Response
 
+from src.card.cardDTO import CardDTO
 from src.card.card_repository import CardRepository
 from src.common.string_operations import concatenate_words_in_string, capitalize_string, remove_special_characters
 from src.models import Card
@@ -30,7 +32,7 @@ class CardService:
     def delete_card(self, card_id: int) -> None:
         return self.card_repository.delete_card(card_id)
 
-    def get_card_details_from_url(self, base_link: str, mtg_set: str, title: str) -> dict[str, any]:
+    def get_card_data_from_url(self, base_link: str, mtg_set: str, title: str) -> dict[str, any]:
         suffix: str = "#paper"
 
         mtg_set: str = remove_special_characters(mtg_set)
@@ -103,6 +105,23 @@ class CardService:
     def get_set_value_by_name(self, set_name: str) -> str:
         return self.card_repository.get_set_value_by_name(set_name)
 
-    @staticmethod
-    def check_if_card_exist(searched_title: str) -> bool:
+    def check_if_card_exist(self, searched_title: str, searched_set: str) -> bool:
+        return self.card_repository.check_if_card_exist(searched_title, searched_set)
+
+    def is_card_title_available(self, searched_title: str) -> bool:
         return os.path.exists(f'src/static/img/{searched_title}.jpg')
+
+    def save_card(self, card_title, card_set, card_details):
+        if not os.path.exists(f'src/static/img/{card_title}.jpg'):
+            with open(f'src/static/img/{card_title}.jpg', 'wb') as f:
+                f.write(card_details.get('img_data'))
+        card_dto: CardDTO = CardDTO(card_title,
+                                    card_details.get('color').split(","),
+                                    card_details.get('mana_cost'),
+                                    card_details.get('rarity'),
+                                    card_set,
+                                    card_details.get('type')
+                                    )
+        card: Card = card_dto.to_card()
+        self.add_card(card)
+

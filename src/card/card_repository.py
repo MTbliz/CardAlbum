@@ -55,3 +55,11 @@ class CardRepository:
 
     def get_set_value_by_name(self, set_name: str) -> str:
         return CardSet[set_name].value
+
+    def check_if_card_exist(self, searched_title: str, searched_set: str) -> bool:
+        card = Card.query.join(CardDetails)\
+            .filter(Card.title ==searched_title, CardDetails.set == searched_set).first()
+        if card:
+            return True
+        else:
+            False
