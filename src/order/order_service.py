@@ -1,4 +1,4 @@
-from src.models import Order
+from src.models import Order, OrderStateSet
 from src.order.order_repository import OrderRepository
 
 
@@ -21,3 +21,33 @@ class OrderService:
 
     def next_order_state(self, order_id) -> None:
         self.order_repository.next_order_state(order_id)
+
+    def can_user_change_state(self, order: Order, user_id: int) -> bool:
+
+        states_to_change_by_user = {
+            OrderStateSet.STATUS_1: "CUSTOMER",
+            OrderStateSet.STATUS_2: "SELLER",
+            OrderStateSet.STATUS_3: "CUSTOMER",
+            OrderStateSet.STATUS_4: "SELLER",
+        }
+
+        user_type_with_permission = states_to_change_by_user.get(order.order_state)
+        if user_type_with_permission == "CUSTOMER":
+            return self.is_current_user_customer_in_order(order, user_id)
+        elif user_type_with_permission == "SELLER":
+            return self.is_current_user_seller_in_order(order, user_id)
+        else:
+            return False
+
+    def is_current_user_customer_in_order(self, order: Order, user_id: int) -> bool:
+        if order.customer_id == user_id:
+            return True
+        else:
+            return False
+
+    def is_current_user_seller_in_order(self, order: Order, user_id: int) -> bool:
+        if order.user_id == user_id:
+            return True
+        else:
+            return False
+

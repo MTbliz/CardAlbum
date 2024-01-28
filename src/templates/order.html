@@ -47,12 +47,12 @@
                 {% for item in order_items.items %}
                 <tr>
                     <th scope="row">{{ loop.index }}</th>
-                    <td>{{ item.user_card.card.title }}</td>
+                    <td>{{ item.card.title }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td>{{ item.user_card.price }}</td>
-                    <td>{{ item.user_card.quality.value }}</td>
+                    <td>{{ item.total_price }}</td>
+                    <td>{{ item.quality.value }}</td>
                     <td>
-                        <img src="{{ url_for('static', filename='img/' + item.user_card.card.title + '.jpg') }}"
+                        <img src="{{ url_for('static', filename='img/' + item.card.title + '.jpg') }}"
                              alt="Card image" style="width:100px; height:auto;">
                     </td>
                 </tr>
@@ -73,7 +73,9 @@
     <div>
         <form action="{{ url_for('order.next_order_state', order_id=order.id) }}" method="post">
             <span class="order-total">Total: {{ total_price }}</span>
+            {% if change_state_possible %}
             <button type="submit" class="btn btn-outline-success" style="float: right;">Accept</button>
+            {% endif %}
         </form>
     </div>
     <div class="row" style="max-width:1220px">

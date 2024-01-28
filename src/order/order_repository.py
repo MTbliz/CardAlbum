@@ -40,8 +40,10 @@ class OrderRepository:
         for basket_item in basket_items:
             order_item: OrderItem = OrderItem(
                 order=order,
-                user_card_id=basket_item.user_card_id,
-                quantity=basket_item.quantity
+                card_id=basket_item.user_card.card_id,
+                quantity=basket_item.quantity,
+                quality=basket_item.user_card.quality,
+                total_price=basket_item.total_price
             )
             order.order_items.append(order_item)
         db.session.add(order)

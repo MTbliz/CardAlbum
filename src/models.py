@@ -105,7 +105,7 @@ class UserCard(db.Model):
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     basket_items = db.relationship('BasketItem', backref='user_card')
-    order_items = db.relationship('OrderItem', backref='user_card')
+
 
 
 class Card(db.Model):
@@ -116,6 +116,7 @@ class Card(db.Model):
     type = db.Column(db.String(), nullable=False)
     card_details = db.relationship('CardDetails', backref='card', uselist=False)
     user_cards = db.relationship('UserCard', backref='card')
+    order_items = db.relationship('OrderItem', backref='card')
 
     def __repr__(self) -> str:
         return f'{self.id}'
@@ -224,5 +225,7 @@ class OrderItem(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
-    user_card_id = db.Column(db.Integer, db.ForeignKey('user_cards.id'))
+    card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
     quantity = db.Column(db.Integer)
+    quality = db.Column(Enum(CardQuality))
+    total_price = db.Column(db.Float(), nullable=False)
