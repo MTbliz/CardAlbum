@@ -1,7 +1,7 @@
 from typing import Union
 
 from flask import request, session, redirect, url_for, render_template
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.wrappers import Response
 
 from src.album.album_forms import CreateAlbumForm, DeleteAlbumForm
@@ -19,6 +19,7 @@ class AlbumController:
         self.album_service: AlbumService = AlbumService()
         self.user_card_service: UserCardService = UserCardService()
 
+    @login_required
     def album_cards(self, album_title: str) -> Union[str, Response]:
 
         form: CardsFiltersForm = CardsFiltersForm()
@@ -72,6 +73,7 @@ class AlbumController:
                                url_view="album.album_cards",
                                params={"album_title": album_title})
 
+    @login_required
     def create_album(self) -> str:
         form: CreateAlbumForm = CreateAlbumForm()
         if form.validate_on_submit():
@@ -84,6 +86,7 @@ class AlbumController:
             session['user_albums'] = user_albums
         return render_template('albums/create_album_page.html', form=form)
 
+    @login_required
     def delete_album(self) -> str:
         albums: list[Album] = self.album_service.get_albums_by_user(current_user.id)
         choices: list[tuple[int, str]] = [(album.id, album.title) for album in albums]
@@ -99,6 +102,7 @@ class AlbumController:
                 session['user_albums'] = user_albums
         return render_template('albums/delete_album_page.html', form=form)
 
+    @login_required
     def remove_user_card_from_album(self, card_id: int, album_id: int, album_title: str) -> Response:
         self.user_card_service.remove_user_card_from_album(card_id, album_id)
         return redirect(url_for('album.album_cards', album_title=album_title))

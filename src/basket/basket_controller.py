@@ -1,7 +1,7 @@
 from typing import Union
 
 from flask import request, session, render_template, redirect, url_for, flash, jsonify
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.wrappers import Response
 
 from src.basket.basket_forms import BasketSellForm
@@ -18,6 +18,7 @@ class BasketController:
         self.order_service: OrderService = OrderService()
         self.user_service: UserService = UserService()
 
+    @login_required
     def get_basket(self) -> Union[str, Response]:
         page: int = request.args.get('page', 1, type=int)
         ROWS_PER_PAGE: int = 5
@@ -46,12 +47,14 @@ class BasketController:
                                form=form,
                                customers=customers, params={})
 
+    @login_required
     def add_user_card_to_basket(self, basket_id: int, user_card_id: int) -> str:
         self.basket_service.add_user_card_to_basket(basket_id, user_card_id)
         basket_count: int = int(session['basket_count'])
         session['basket_count'] = basket_count + 1
         return "Item added to basket", 200
 
+    @login_required
     def delete_basket_item(self, basket_id: int, basket_item_id: int) -> Response:
         self.basket_service.delete_basket_item(basket_id, basket_item_id)
         user_id: int = current_user.id
@@ -59,6 +62,7 @@ class BasketController:
         session['basket_count'] = basket_count
         return redirect(url_for('basket.get_basket'))
 
+    @login_required
     def clear_basket(self) -> Response:
         user_id: int = current_user.id
         self.basket_service.clear_basket(user_id)
@@ -66,6 +70,7 @@ class BasketController:
         flash("All products removed successfully", "success")
         return redirect(url_for('basket.get_basket'))
 
+    @login_required
     def update_basket_item_quantity(self, basket_id: int, basket_item_id: int, quantity: int) -> str:
         user_id: int = current_user.id
         self.basket_service.update_basket_item_quantity(user_id, basket_id, basket_item_id, quantity)

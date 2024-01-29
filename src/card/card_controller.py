@@ -1,7 +1,7 @@
 from typing import Union
 
 from flask import request, render_template, session, redirect, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.wrappers import Response
 
 from src.album.album_service import AlbumService
@@ -21,6 +21,7 @@ class CardsController:
         self.user_card_service: UserCardService = UserCardService()
         self.album_service: AlbumService = AlbumService()
 
+    @login_required
     def cards(self) -> str:
         form: CardsFiltersForm = CardsFiltersForm()
 
@@ -82,6 +83,7 @@ class CardsController:
                                url_view="card.cards",
                                params={})
 
+    @login_required
     def create_card(self) -> Union[str, Response]:
         base_link: str = 'https://www.mtggoldfish.com/price'
 
@@ -152,10 +154,12 @@ class CardsController:
         self.user_card_service.delete_card(id)
         return redirect(url_for('card.cards'))
 
+    @login_required
     def remove_user_card_from_album(self, card_id: int, album_id: int) -> Response:
         self.user_card_service.remove_user_card_from_album(card_id, album_id)
         return redirect(url_for('card.cards'))
 
+    @login_required
     def add_user_card_to_album(self, card_id: int, album_id: int) -> Response:
         self.user_card_service.add_user_card_to_album(card_id, album_id)
         return redirect(url_for('card.cards'))

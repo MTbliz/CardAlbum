@@ -1,3 +1,6 @@
+from flask import abort
+from flask_login import current_user
+
 from src.models import Order, OrderStateSet
 from src.order.order_repository import OrderRepository
 
@@ -11,13 +14,26 @@ class OrderService:
         return self.order_repository.get_orders(page, ROWS_PER_PAGE)
 
     def get_order(self, order_id: int) -> Order:
-        return self.order_repository.get_order(order_id)
+        order: Order = self.order_repository.get_order(order_id)
+        if not order:
+            abort(404)
+        elif current_user.id != order.user_id and current_user.id != order.customer_id:
+            abort(403)
+        else:
+            return order
 
     def get_order_items(self, order_id: int, page: int, ROWS_PER_PAGE: int):
-        return self.order_repository.get_order_items(order_id, page, ROWS_PER_PAGE)
+        order: Order = self.order_repository.get_order(order_id)
+        if current_user.id != order.user_id and order.customer_id:
+            abort(403)
+        else:
+            return self.order_repository.get_order_items(order_id, page, ROWS_PER_PAGE)
 
     def create_order(self, user_id, customer_id) -> None:
-        self.order_repository.create_order(user_id, customer_id)
+        if current_user.id != user_id and current_user.id != customer_id:
+            abort(403)
+        else:
+            self.order_repository.create_order(user_id, customer_id)
 
     def next_order_state(self, order_id) -> None:
         self.order_repository.next_order_state(order_id)

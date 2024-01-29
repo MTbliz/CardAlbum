@@ -8,14 +8,10 @@ class BasketRepository:
 
     def get_basket(self, basket_id: int) -> Basket:
         basket: Basket = Basket.query.get(basket_id)
-        if not basket:
-            raise Exception("Basket not found")
         return basket
 
     def get_basket_by_user(self, user_id: int) -> Basket:
         basket: Basket = Basket.query.filter_by(user_id=user_id).first()
-        if not basket:
-            raise Exception("Basket not found")
         return basket
 
     def add_user_card_to_basket(self, basket_id: int, user_card_id: int) -> None:
@@ -56,9 +52,12 @@ class BasketRepository:
             basket_count = 0
         return basket_count
 
-    def delete_basket_item(self, basket_id: int, basket_item_id: int) -> None:
+    def delete_basket_item(self, basket_id: int, basket_item_id: int) -> bool:
         basket_item: BasketItem = BasketItem.query \
             .filter(BasketItem.basket_id == basket_id, BasketItem.id == basket_item_id).first()
-        if basket_item:
+        if not basket_item:
+            return False
+        else:
             db.session.delete(basket_item)
             db.session.commit()
+            return True

@@ -29,9 +29,6 @@ class CardService:
     def add_card(self, card: Card) -> None:
         return self.card_repository.add_card(card)
 
-    def delete_card(self, card_id: int) -> None:
-        return self.card_repository.delete_card(card_id)
-
     def get_card_data_from_url(self, base_link: str, mtg_set: str, title: str) -> dict[str, any]:
         suffix: str = "#paper"
 

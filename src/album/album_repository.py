@@ -11,8 +11,6 @@ class AlbumRepository:
 
     def get_album(self, album_id: int) -> Album:
         album: Album = Album.query.filter_by(id=album_id).first()
-        if not album:
-            raise Exception("Album not found")
         return album
 
     def get_album_cards(self, album_title: str, field_sort: str, order: str, filters: dict[str, str], page: int,
@@ -37,13 +35,15 @@ class AlbumRepository:
         db.session.add(album)
         db.session.commit()
 
-    def delete_album(self, album_id: int) -> None:
+    def delete_album(self, album_id: int) -> bool:
         album: Album = Album.query.filter_by(id=album_id).first()
         if not album:
-            raise Exception("Album not found")
-        album.user_cards = []
-        db.session.delete(album)
-        db.session.commit()
+            return False
+        else:
+            album.user_cards = []
+            db.session.delete(album)
+            db.session.commit()
+            return True
 
     def get_ablums_by_user(self, user_id: int) -> list[Album]:
         user: User = User.query.get(user_id)

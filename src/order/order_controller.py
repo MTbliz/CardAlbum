@@ -1,5 +1,5 @@
 from flask import render_template, url_for, request, redirect, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.wrappers import Response
 
 from src.basket.basket_service import BasketService
@@ -13,6 +13,7 @@ class OrderController:
         self.basket_service: BasketService = BasketService()
         self.order_service: OrderService = OrderService()
 
+    @login_required
     def orders(self) -> str:
         page: int = request.args.get('page', 1, type=int)
         ROWS_PER_PAGE: int = 5
@@ -22,6 +23,7 @@ class OrderController:
                                url_view="order.orders",
                                params={})
 
+    @login_required
     def get_order(self, order_id: int) -> str:
         page: int = request.args.get('page', 1, type=int)
         ROWS_PER_PAGE: int = 5
@@ -42,6 +44,7 @@ class OrderController:
                                url_view="order.get_order",
                                params={"order_id": order_id})
 
+    @login_required
     def next_order_state(self, order_id: int) -> Response:
         order: Order = self.order_service.get_order(order_id)
         change_possible = self.order_service.can_user_change_state(order, current_user.id)
