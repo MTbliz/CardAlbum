@@ -50,7 +50,7 @@ class AlbumService:
 
     def get_albums_by_user_card(self, card_id: int) -> list[Album]:
         albums = self.album_repository.get_albums_by_user_card(card_id)
-        if len(albums) > 0 and current_user.id != albums[0].user_id:
+        if len(albums) > 0 and any(album.user_id != current_user.id for album in albums):
             abort(403)
         else:
             return albums
