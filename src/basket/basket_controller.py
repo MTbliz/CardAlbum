@@ -50,7 +50,7 @@ class BasketController:
     @login_required
     def add_user_card_to_basket(self, basket_id: int, user_card_id: int) -> str:
         self.basket_service.add_user_card_to_basket(basket_id, user_card_id)
-        basket_count: int = int(session['basket_count'])
+        basket_count: int = int(session.get('basket_count', 0))
         session['basket_count'] = basket_count + 1
         return "Item added to basket", 200
 

@@ -19,7 +19,7 @@ class BasketService:
         elif current_user.id != basket.user_id:
             abort(403)
         else:
-            basket
+            return basket
 
     def get_basket_by_user(self, user_id: int) -> Basket:
         basket: Basket = self.basket_repository.get_basket_by_user(user_id)
@@ -28,7 +28,7 @@ class BasketService:
         elif current_user.id != basket.user_id:
             abort(403)
         else:
-            basket
+            return basket
 
     def add_user_card_to_basket(self, basket_id: int, user_card_id: int) -> None:
         basket: Basket = self.basket_repository.get_basket(basket_id)
