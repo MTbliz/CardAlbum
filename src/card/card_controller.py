@@ -1,6 +1,6 @@
 from typing import Union
 
-from flask import request, render_template, session, redirect, url_for
+from flask import request, render_template, session, redirect, url_for, jsonify
 from flask_login import current_user, login_required
 from loguru import logger
 from werkzeug.wrappers import Response
@@ -173,3 +173,13 @@ class CardsController:
         self.user_card_service.add_user_card_to_album(card_id, album_id)
         logger.info(f"User card '{card_id}' added by user: {current_user.username} to album: {album_id}")
         return redirect(url_for('card.cards'))
+
+    @login_required
+    def increase_user_card_availability(self, card_id: int) -> Response:
+        new_availability = self.user_card_service.increase_user_card_availability(card_id)
+        return jsonify({"new_availability": new_availability}), 200
+
+    @login_required
+    def decrease_user_card_availability(self, card_id: int) -> Response:
+        new_availability = self.user_card_service.decrease_user_card_availability(card_id)
+        return jsonify({"new_availability": new_availability}), 200

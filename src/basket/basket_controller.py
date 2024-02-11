@@ -4,7 +4,7 @@ from flask import request, session, render_template, redirect, url_for, flash, j
 from flask_login import current_user, login_required
 from loguru import logger
 from werkzeug.wrappers import Response
-
+from src.exceptions.exceptions import InsufficientQuantityError
 from src.basket.basket_forms import BasketSellForm
 from src.basket.basket_service import BasketService
 from src.models import User
@@ -87,7 +87,10 @@ class BasketController:
         user_id: int = current_user.id
         logger.info(f"Updating quantity of basket item with ID {basket_item_id}"
                     f" in basket with ID {basket_id} to {quantity} for user with ID {user_id}.")
-        self.basket_service.update_basket_item_quantity(user_id, basket_id, basket_item_id, quantity)
+        try:
+            self.basket_service.update_basket_item_quantity(user_id, basket_id, basket_item_id, quantity)
+        except InsufficientQuantityError as e:
+            flash(str(e), 'danger')
         basket_count: int = self.basket_service.get_basket_items_count(user_id)
         session['basket_count'] = basket_count
         logger.info(f"Quantity updated for basket item with ID {basket_item_id} in basket with ID {basket_id}."

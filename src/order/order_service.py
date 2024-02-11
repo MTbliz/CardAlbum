@@ -14,7 +14,7 @@ class OrderService:
     def get_orders(self, page: int, ROWS_PER_PAGE: int):
         logger.info(f"Retrieving orders.")
         orders = self.order_repository.get_orders(page, ROWS_PER_PAGE)
-        logger.info(f"Retrieved {len(orders)} orders.")
+        logger.info(f"Retrieved orders orders.")
         return orders
 
     def get_order(self, order_id: int) -> Order:

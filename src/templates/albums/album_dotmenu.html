@@ -26,6 +26,8 @@
             <div class="info"><span> Delete Card</span></div>
         </a>
         <div class="info" onclick="sell({{user_card.id}}, {{user_card.user.basket.id}})"><span>Sell</span></div>
+        <div class="info" onclick="increaseCard({{user_card.id}})"><span>Increase</span></div>
+        <div class="info" onclick="decreaseCard({{user_card.id}})"><span>Decrease</span></div>
         <div class="info" onclick="remove({{ user_card.id }})"><span>Exit</span></div>
     </div>
     <!--end frame1 class end-->
@@ -70,6 +72,46 @@
     console.error('Error:', error);
     });
   }
+
+function increaseCard(id) {
+   fetch('card/' + id + '/increase', {
+       method: 'POST'
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw new Error('Network response was not ok');
+       }
+       return response.json()
+   })
+   .then(data => {
+    var new_availability = data.new_availability
+    var cardAvailabilityElement = document.getElementById('card_availability_' + id);
+        cardAvailabilityElement.textContent = ' Amount: ' + parseInt(new_availability);
+    })
+   .catch(error => {
+       console.error('There has been a problem with your fetch operation:', error);
+   });
+}
+
+  function decreaseCard(id) {
+   fetch('card/' + id + '/decrease', {
+       method: 'POST'
+   })
+   .then(response => {
+       if (!response.ok) {
+           throw new Error('Network response was not ok');
+       }
+       return response.json()
+   })
+   .then(data => {
+    var new_availability = data.new_availability
+    var cardAvailabilityElement = document.getElementById('card_availability_' + id);
+        cardAvailabilityElement.textContent = ' Amount: ' + parseInt(new_availability);
+    })
+   .catch(error => {
+       console.error('There has been a problem with your fetch operation:', error);
+   });
+}
 
   function sell(user_card_id, basket_id) {
    fetch(`/basket/${basket_id}/add/${user_card_id}`, {

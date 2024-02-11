@@ -1,6 +1,6 @@
 from typing import Union
 
-from flask import request, session, redirect, url_for, render_template
+from flask import request, session, redirect, url_for, render_template, jsonify
 from flask_login import current_user, login_required
 from loguru import logger
 from werkzeug.wrappers import Response
@@ -117,3 +117,13 @@ class AlbumController:
         self.user_card_service.remove_user_card_from_album(card_id, album_id)
         logger.info(f"Card with ID {card_id} removed from album with ID {album_id} by user: {current_user.username}")
         return redirect(url_for('album.album_cards', album_title=album_title))
+
+    @login_required
+    def increase_user_card_availability(self, card_id: int) -> Response:
+        new_availability = self.user_card_service.increase_user_card_availability(card_id)
+        return jsonify({"new_availability": new_availability}), 200
+
+    @login_required
+    def decrease_user_card_availability(self, card_id: int) -> Response:
+        new_availability = self.user_card_service.decrease_user_card_availability(card_id)
+        return jsonify({"new_availability": new_availability}), 200

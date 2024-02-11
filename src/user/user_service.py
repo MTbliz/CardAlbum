@@ -19,7 +19,7 @@ class UserService:
             abort(403)
         else:
             customers = self.user_repository.get_possible_customers(user_id)
-            logger.info(f"Found {len(customers)} possible customers for user with ID {user_id}")
+            logger.info(f"Found customers possible customers for user with ID {user_id}")
             return customers
 
     def get_user_by_email(self, email: str) -> User:

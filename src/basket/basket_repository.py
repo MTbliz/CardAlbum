@@ -24,6 +24,10 @@ class BasketRepository:
             db.session.add(basket_item)
         db.session.commit()
 
+    def get_basket_item(self, basket_item_id):
+        basket_item = BasketItem.query.filter_by(id=basket_item_id).first()
+        return basket_item
+
     def get_basket_items_by_user(self, user_id: int, page: int, ROWS_PER_PAGE: int):
         basket_items = BasketItem.query.join(Basket).filter(Basket.user_id == user_id) \
             .paginate(page=page, per_page=ROWS_PER_PAGE, error_out=False)

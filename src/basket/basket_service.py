@@ -3,8 +3,9 @@ from flask_login import current_user
 from loguru import logger
 
 from src.basket.basket_repository import BasketRepository
-from src.models import Basket, BasketItem
 from src.card.user_card_repository import UserCardRepository
+from src.exceptions.exceptions import InsufficientQuantityError
+from src.models import Basket, BasketItem
 
 
 class BasketService:
@@ -72,12 +73,15 @@ class BasketService:
         logger.info("Updating quantity for basket item.")
         basket_item: BasketItem = self.basket_repository.get_basket_item(basket_item_id)
         basket: Basket = self.basket_repository.get_basket(basket_id)
-        if basket_item is None or basket:
+        if basket_item is None or basket is None:
             logger.error("Basket item or basket not found.")
             abort(404)
         elif any(current_user.id != user_id for user_id in [user_id, basket_item.basket.user_id, basket.user_id]):
             logger.warning("Unauthorized attempt to update basket item quantity.")
             abort(403)
+        elif basket_item.user_card.availability < quantity:
+            raise InsufficientQuantityError(f"Not enough {basket_item.user_card.card.title} cards."
+                                            f" Max quantity: {basket_item.quantity}")
         else:
             self.basket_repository.update_basket_item_quantity(user_id, basket_id, basket_item_id, quantity)
             logger.info("Quantity updated successfully for basket item.")

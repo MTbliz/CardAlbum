@@ -14,7 +14,7 @@ class AlbumService:
     def get_albums(self) -> list[Album]:
         logger.info("Retrieving all albums.")
         albums = self.album_repository.get_albums()
-        logger.info(f"Retrieved {len(albums)} albums.")
+        logger.info(f"Retrieved albums.")
         return albums
 
     def get_album(self, album_id: int) -> Album:
@@ -35,7 +35,7 @@ class AlbumService:
                         ROWS_PER_PAGE: int):
         logger.info("Retrieving album cards.")
         albums = self.album_repository.get_album_cards(album_title, field_sort, order, filters, page, ROWS_PER_PAGE)
-        logger.info(f"Retrieved {len(albums)} album cards.")
+        logger.info(f"Retrieved album cards.")
         return albums
 
     def add_album(self, album: Album) -> None:

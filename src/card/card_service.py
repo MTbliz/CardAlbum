@@ -20,7 +20,7 @@ class CardService:
     def get_cards(self, field_sort: str, order: str, filters: dict[str, str], page: int, ROWS_PER_PAGE: int):
         logger.info("Retrieving all cards.")
         cards = self.card_repository.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
-        logger.info(f"Retrieved {len(cards)} cards.")
+        logger.info(f"Retrieved cards.")
         return cards
 
     def get_card(self, card_id: int) -> Card:

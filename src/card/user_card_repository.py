@@ -58,3 +58,23 @@ class UserCardRepository:
         user_card: UserCard = UserCard.query.get(card_id)
         album.user_cards.append(user_card)
         db.session.commit()
+
+    def increase_user_card_availability(self, card_id: int) -> int:
+        user_card: UserCard = UserCard.query.filter_by(id=card_id).first()
+        if user_card:
+            user_card.availability += 1
+            db.session.commit()
+            return user_card.availability
+        else:
+            return None
+
+    def decrease_user_card_availability(self, card_id: int) -> int:
+        user_card: UserCard = UserCard.query.filter_by(id=card_id).first()
+        if user_card:
+            user_card.availability -= 1
+            db.session.commit()
+            return user_card.availability
+        else:
+            return None
+
+

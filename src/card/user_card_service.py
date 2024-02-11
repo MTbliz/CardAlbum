@@ -17,7 +17,7 @@ class UserCardService:
                   ROWS_PER_PAGE: int):
         logger.info("Retrieving all uesr_cards.")
         cards = self.user_card_repository.get_cards(user_id, field_sort, order, filters, page, ROWS_PER_PAGE)
-        logger.info(f"Retrieved user_cards for user id: {user_id}, count: {len(cards)}")
+        logger.info(f"Retrieved user_cards for user id: {user_id}")
         return cards
 
     def get_card(self, card_id: int) -> UserCard:
@@ -31,7 +31,7 @@ class UserCardService:
             abort(403)
         else:
             logger.info(f"User {current_user.id} accessed user_card {card_id}.")
-            user_card
+            return user_card
 
     def add_card(self, card: UserCard) -> None:
         logger.info(f"Attempting to add user_card with ID {card.id}.")
@@ -89,3 +89,21 @@ class UserCardService:
         else:
             self.user_card_repository.add_user_card_to_album(card_id, album_id)
             logger.info(f"Added user_card {card_id} to album {album_id} for user {current_user.id}")
+
+    def increase_user_card_availability(self, card_id: int) -> int:
+        user_card = self.user_card_repository.get_card(card_id)
+        if current_user.id != user_card.user_id:
+            abort(403)
+        else:
+            new_availability = self.user_card_repository.increase_user_card_availability(card_id)
+            return new_availability
+
+    def decrease_user_card_availability(self, card_id: int) -> int:
+        user_card = self.user_card_repository.get_card(card_id)
+        if current_user.id != user_card.user_id:
+            abort(403)
+        elif user_card.availability == 0:
+            return user_card.availability
+        else:
+            new_availability = self.user_card_repository.decrease_user_card_availability(card_id)
+            return new_availability
