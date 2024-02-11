@@ -2,6 +2,7 @@ from typing import Union
 
 from flask import request, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
+from loguru import logger
 from werkzeug.wrappers import Response
 
 from src.album.album_service import AlbumService
@@ -23,6 +24,7 @@ class CardsController:
 
     @login_required
     def cards(self) -> str:
+        logger.info(f"Visiting cards page.")
         form: CardsFiltersForm = CardsFiltersForm()
 
         if form.validate_on_submit():
@@ -85,6 +87,7 @@ class CardsController:
 
     @login_required
     def create_card(self) -> Union[str, Response]:
+        logger.info(f"Create card page accessed by user: {current_user.username}")
         base_link: str = 'https://www.mtggoldfish.com/price'
 
         search_form: CardSearchForm = CardSearchForm()
@@ -137,8 +140,9 @@ class CardsController:
                                                          current_user.id)
                 user_card: UserCard = user_card_dto.to_user_card()
                 self.user_card_service.add_card(user_card)
+                logger.info(f"Card '{card.title}' added by user: {current_user.username} to collection.")
             else:
-                print("This card is in your collection.")
+                logger.info(f"Card '{card.title}' in user: {current_user.username} collection.")
 
         return render_template('cards/create_card_page.html', form=search_form, create_card_form=create_card_form,
                                card_image=card_image)
@@ -151,15 +155,21 @@ class CardsController:
         session['previous_endpoint'] = request.endpoint
 
     def delete_user_card(self, id: int) -> Response:
+        logger.info(f"Deleting user card with ID {id}.")
         self.user_card_service.delete_card(id)
+        logger.info(f"User card '{id}' deleted by user: {current_user.username}")
         return redirect(url_for('card.cards'))
 
     @login_required
     def remove_user_card_from_album(self, card_id: int, album_id: int) -> Response:
+        logger.info(f"Removing user card with ID {card_id} from album {album_id}.")
         self.user_card_service.remove_user_card_from_album(card_id, album_id)
+        logger.info(f"User card '{card_id}' deleted by user: {current_user.username} from album: {album_id}")
         return redirect(url_for('card.cards'))
 
     @login_required
     def add_user_card_to_album(self, card_id: int, album_id: int) -> Response:
+        logger.info(f"Adding user card with ID {card_id} to album {album_id}.")
         self.user_card_service.add_user_card_to_album(card_id, album_id)
+        logger.info(f"User card '{card_id}' added by user: {current_user.username} to album: {album_id}")
         return redirect(url_for('card.cards'))

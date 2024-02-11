@@ -1,9 +1,9 @@
 import os
-from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup
 from bs4 import Tag
+from loguru import logger
 from requests.models import Response
 
 from src.card.cardDTO import CardDTO
@@ -18,18 +18,29 @@ class CardService:
         self.card_repository: CardRepository = CardRepository()
 
     def get_cards(self, field_sort: str, order: str, filters: dict[str, str], page: int, ROWS_PER_PAGE: int):
-        return self.card_repository.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
+        logger.info("Retrieving all cards.")
+        cards = self.card_repository.get_cards(field_sort, order, filters, page, ROWS_PER_PAGE)
+        logger.info(f"Retrieved {len(cards)} cards.")
+        return cards
 
     def get_card(self, card_id: int) -> Card:
-        return self.card_repository.get_card(card_id)
+        logger.info(f"Attempting to retrieve cards with ID {card_id}.")
+        card = self.card_repository.get_card(card_id)
+        logger.info(f"Successfully retrieved card with ID: {card_id}")
+        return card
 
     def get_card_by_title(self, title: str) -> Card:
-        return self.card_repository.get_card_by_title(title)
+        logger.info(f"Attempting to retrieve cards with title {title}.")
+        card = self.card_repository.get_card_by_title(title)
+        logger.info(f"Successfully retrieved card with title: {title}")
+        return card
 
     def add_card(self, card: Card) -> None:
-        return self.card_repository.add_card(card)
+        self.card_repository.add_card(card)
+        logger.info(f"Add card {card.id}.")
 
     def get_card_data_from_url(self, base_link: str, mtg_set: str, title: str) -> dict[str, any]:
+        logger.info(f"Attempting to retrieve card with title {title} and set {mtg_set} from url {base_link}.")
         suffix: str = "#paper"
 
         mtg_set: str = remove_special_characters(mtg_set)
@@ -76,9 +87,12 @@ class CardService:
                 'price': price,
                 'img_data': img_data
             }
+        logger.info(f"Retrieved card with title {title} and set {mtg_set} from url {base_link}."
+                    f" Status code {result['status_code']}.")
         return result
 
     def _get_mana_cost_number(self, mana_cost: str) -> int:
+        logger.info(f"Attempting to retrieve card mana.")
         colors_with_numbers: list[str] = mana_cost.split(" ")
         mana_cost_number: int = 0
         for color_or_number in colors_with_numbers:
@@ -86,39 +100,55 @@ class CardService:
                 mana_cost_number += int(color_or_number)
             else:
                 mana_cost_number += 1
+        logger.info(f"Retrieved card mana. Mana cost: {mana_cost_number}")
         return mana_cost_number
 
     def _get_card_color(self, mana_cost: str) -> str:
+        logger.info(f"Attempting to retrieve card color.")
         colors_with_numbers: list[str] = mana_cost.split(" ")
         colors: set = set()
         for color_or_number in colors_with_numbers:
             if not color_or_number.isnumeric():
                 colors.add(color_or_number)
         if len(colors) > 0:
-            return ','.join(colors)
+            final_colors = ','.join(colors)
+            logger.info(f"Retrieved card colors. Colors: {final_colors}")
+            return final_colors
         else:
+            logger.info(f"Retrieved card colors. Color: colorless")
             return 'colorless'
 
     def get_set_value_by_name(self, set_name: str) -> str:
-        return self.card_repository.get_set_value_by_name(set_name)
+        value = self.card_repository.get_set_value_by_name(set_name)
+        logger.info(f"Retrieved set value for '{set_name}': {value}")
+        return value
 
     def check_if_card_exist(self, searched_title: str, searched_set: str) -> bool:
-        return self.card_repository.check_if_card_exist(searched_title, searched_set)
+        exists = self.card_repository.check_if_card_exist(searched_title, searched_set)
+        logger.info(f"Checked if card exists: title='{searched_title}', set='{searched_set}', result={exists}")
+        return exists
 
     def is_card_title_available(self, searched_title: str) -> bool:
-        return os.path.exists(f'src/static/img/{searched_title}.jpg')
+        available = os.path.exists(f'src/static/img/{searched_title}.jpg')
+        logger.info(f"Checked if card title is available: '{searched_title}', available={available}")
+        return available
 
     def save_card(self, card_title, card_set, card_details):
-        if not os.path.exists(f'src/static/img/{card_title}.jpg'):
-            with open(f'src/static/img/{card_title}.jpg', 'wb') as f:
-                f.write(card_details.get('img_data'))
-        card_dto: CardDTO = CardDTO(card_title,
-                                    card_details.get('color').split(","),
-                                    card_details.get('mana_cost'),
-                                    card_details.get('rarity'),
-                                    card_set,
-                                    card_details.get('type')
-                                    )
-        card: Card = card_dto.to_card()
-        self.add_card(card)
+        logger.info(f"Attempting to save card {card_title}.")
+        try:
+            if not os.path.exists(f'src/static/img/{card_title}.jpg'):
+                with open(f'src/static/img/{card_title}.jpg', 'wb') as f:
+                    f.write(card_details.get('img_data'))
+            card_dto: CardDTO = CardDTO(card_title,
+                                        card_details.get('color').split(","),
+                                        card_details.get('mana_cost'),
+                                        card_details.get('rarity'),
+                                        card_set,
+                                        card_details.get('type')
+                                        )
+            card: Card = card_dto.to_card()
+            self.add_card(card)
+            logger.info(f"Card '{card_title}' saved successfully.")
+        except Exception as e:
+            logger.error(f"Failed to save card '{card_title}': {e}")
 

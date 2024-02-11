@@ -1,9 +1,9 @@
 from flask import abort
 from flask_login import current_user
+from loguru import logger
 
 from src.album.album_repository import AlbumRepository
 from src.models import Album
-from loguru import logger
 
 
 class AlbumService:
