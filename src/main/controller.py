@@ -2,6 +2,7 @@ from typing import Union
 
 from flask import render_template, session, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user
+from loguru import logger
 from werkzeug.wrappers import Response
 
 from src import db
@@ -19,6 +20,7 @@ class MainController:
         self.user_service: UserService = UserService()
 
     def root(self) -> Union[str, Response]:
+        logger.info("Root page accessed.")
         if current_user.is_authenticated:
             user_albums: list[Album] = self.album_service.get_albums_by_user(current_user.id)
             session['user_albums'] = [user_album.title for user_album in user_albums]
@@ -27,8 +29,10 @@ class MainController:
             if basket_count is None:
                 basket_count = 0
             session['basket_count'] = basket_count
+            logger.info(f"Authenticated user {current_user.id} visited the root page.")
             return render_template("base.html")
         else:
+            logger.info("Unauthenticated user attempted to visit the root page.")
             return redirect(url_for('main.login'))
 
     def login(self) -> Union[str, Response]:
@@ -38,14 +42,17 @@ class MainController:
             user: User = self.user_service.get_user_by_email(email)
             if user and user.check_password(password):
                 login_user(user)
+                logger.info(f"User {email} logged in successfully.")
                 return redirect(url_for('main.root'))
             else:
+                logger.warning(f"Failed login attempt for user {email}.")
                 flash('Please check your login details and try again.', 'danger')
                 return redirect(url_for('main.login'))
         return render_template('login.html')
 
     def logout(self) -> Response:
         logout_user()
+        logger.info(f"User {current_user.id} logged out successfully.")
         flash('Logged out successfully.', 'success')
         return redirect(url_for('main.login'))
 
@@ -58,6 +65,7 @@ class MainController:
             user: User = self.user_service.get_user_by_email(email)
 
             if user:  # if a user is found, we want to redirect back to signup page so user can try again
+                logger.warning(f"Signup attempt with existing email address: {email}")
                 flash('Email address already exists', category='danger')
                 return redirect(url_for('main.signup'))
 
@@ -69,8 +77,10 @@ class MainController:
             db.session.add(new_user)
             db.session.commit()
 
+            logger.info(f"New user {username} signed up successfully.")
             return redirect(url_for('main.login'))
         return render_template('signup.html')
 
     def profile(self) -> str:
+        logger.info(f"Profile page accessed by user {current_user.id}.")
         return render_template('order.html')

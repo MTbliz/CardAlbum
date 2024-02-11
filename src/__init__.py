@@ -1,7 +1,8 @@
 from flask import Flask
-from src.extensions import db, login_manager
+from loguru import logger
 
 from configuration import DevConfig
+from src.extensions import db, login_manager
 from src.album.album_routes import bp as album_bp
 from src.basket.basket_routes import bp as basket_bp
 from src.card.card_routes import bp as card_bp
@@ -20,6 +21,16 @@ def create_app(config_class=DevConfig):
 
     with app.app_context():
         db.create_all()
+
+    # Initialize Loguru
+    logger.remove()  # Remove default handlers
+    logger.add(
+        app.config['LOGFILE'],
+        level=app.config['LOG_LEVEL'],
+        rotation="25 MB",
+        retention="10 days",
+        format="{time} {level} {message}"
+    )
 
     # Register blueprints here
     app.register_blueprint(main_bp)

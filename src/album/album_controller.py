@@ -2,6 +2,7 @@ from typing import Union
 
 from flask import request, session, redirect, url_for, render_template
 from flask_login import current_user, login_required
+from loguru import logger
 from werkzeug.wrappers import Response
 
 from src.album.album_forms import CreateAlbumForm, DeleteAlbumForm
@@ -21,6 +22,7 @@ class AlbumController:
 
     @login_required
     def album_cards(self, album_title: str) -> Union[str, Response]:
+        logger.info(f"Visiting album cards page for album title: {album_title}")
 
         form: CardsFiltersForm = CardsFiltersForm()
 
@@ -75,6 +77,8 @@ class AlbumController:
 
     @login_required
     def create_album(self) -> str:
+        logger.info(f"Create album page accessed by user: {current_user.username}")
+
         form: CreateAlbumForm = CreateAlbumForm()
         if form.validate_on_submit():
             album: Album = Album()
@@ -84,10 +88,13 @@ class AlbumController:
             user_albums: list[Album] = session['user_albums']
             user_albums.append(album.title)
             session['user_albums'] = user_albums
+            logger.info(f"Album '{album.title}' created by user: {current_user.username}")
         return render_template('albums/create_album_page.html', form=form)
 
     @login_required
     def delete_album(self) -> str:
+        logger.info(f"Delete album page accessed by user: {current_user.username}")
+
         albums: list[Album] = self.album_service.get_albums_by_user(current_user.id)
         choices: list[tuple[int, str]] = [(album.id, album.title) for album in albums]
         form: DeleteAlbumForm = DeleteAlbumForm()
@@ -100,9 +107,13 @@ class AlbumController:
                 user_albums: list[Album] = session['user_albums']
                 user_albums.remove(album.title)
                 session['user_albums'] = user_albums
+                logger.info(f"Album '{album.title}' deleted by user: {current_user.username}")
         return render_template('albums/delete_album_page.html', form=form)
 
     @login_required
     def remove_user_card_from_album(self, card_id: int, album_id: int, album_title: str) -> Response:
+        logger.info(f"Removing card from album for user: {current_user.username}")
+
         self.user_card_service.remove_user_card_from_album(card_id, album_id)
+        logger.info(f"Card with ID {card_id} removed from album with ID {album_id} by user: {current_user.username}")
         return redirect(url_for('album.album_cards', album_title=album_title))

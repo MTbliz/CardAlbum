@@ -25,6 +25,11 @@ class DevConfig:
     SQLALCHEMY_DATABASE_URI = "sqlite:///database.db"
     SECRET_KEY = config["SECRETS"].get("secret_key", None)
 
+    # logging
+    LOGFILE = "app.log"
+    LOG_LEVEL = 'DEBUG'
+    LOG_BACKTRACE = True
+
 
 class ProdConfig:
     pass
