@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="container">
+    <div class="dashboard-container" style="height:  80vh; display: flex; flex-direction: column;">
+        <div class="chart-container">
+            <canvas id="myChart1"></canvas>
+        </div>
+        <div class="chart-container" >
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+</div>
+<style>
+    .dashboard-container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    height:  100vh; /* Full viewport height */
+}
+
+.chart-container {
+    flex:  1; /* Take up equal space */
+    position: relative; /* Needed for absolute positioning of child elements */
+}
+
+.chart-container canvas {
+    position: absolute; /* Position the canvas within the container */
+    top:  0;
+    left:  0;
+    width:  100%; /* Full width of the container */
+    height:  100%; /* Full height of the container */
+}
+
+</style>
+
+<script>
+  const ctx1 = document.getElementById('myChart1');
+
+  var labels1 = [{% for order_details_seller in orders_details_seller %}'{{ order_details_seller.order_date}}',{% endfor %}];
+  var orders_count_data = [{% for order_details_seller in orders_details_seller %}'{{ order_details_seller.orders_count }}',{% endfor %}];
+  const data1 = {
+    labels: labels1,
+    datasets: [{
+        label: 'Orders Count',
+        data: orders_count_data,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+    }]
+  }
+
+  ;
+
+  const config1 = {
+        type: 'line',
+        data: data1,
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    yAlign: 'bottom'
+                },
+                title: {
+                    color: 'rgb(0, 0, 0)',
+                    display: true,
+                    text: 'Order history',
+                    font: {
+                        size: 20
+                    }
+                }
+            },
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'rgb(0, 0, 0)'
+                    },
+                    grid: {
+                        display: true
+                    },
+                    beginAtZero: false,
+                },
+                y: {
+                    ticks: {
+                        color: 'rgb(0, 0, 0)'
+                    },
+                    grid: {
+                        display: true
+                    },
+                }
+            }
+        }
+    };
+new Chart(ctx1, config1)
+
+
+
+  const ctx2 = document.getElementById('myChart2');
+
+  var labels2 = [{% for order_details_seller in orders_details_seller %}'{{ order_details_seller.order_date}}',{% endfor %}];
+  var orders_total_price_data_seller = [{% for order_details_seller in orders_details_seller %}'{{ order_details_seller.total_price }}',{% endfor %}];
+  var orders_total_price_data_customer = [{% for order_details_customer in orders_details_customer %}'{{ order_details_customer.total_price }}',{% endfor %}];
+  const data2 = {
+    labels: labels2,
+    datasets: [
+      {
+        label: 'Seller',
+        data: orders_total_price_data_seller,
+        fill: false,
+        borderColor: 'rgb(75,  192,  192)',
+        tension:  0.1
+      },
+      {
+        label: 'Customer',
+        data: orders_total_price_data_customer,
+        fill: false,
+        borderColor: 'rgb(255,  99,  132)', // Choose a different color for the second line
+        tension:  0.1
+      }
+    ]
+};
+
+  const config2 = {
+        type: 'line',
+        data: data2,
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    yAlign: 'bottom'
+                },
+                title: {
+                    color: 'rgb(0, 0, 0)',
+                    display: true,
+                    text: 'Price history',
+                    font: {
+                        size: 20
+                    }
+                }
+            },
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'rgb(0, 0, 10)'
+                    },
+                    grid: {
+                        display: true
+                    },
+                    beginAtZero: false,
+                },
+                y: {
+                    ticks: {
+                        color: 'rgb(0, 0, 0)'
+                    },
+                    grid: {
+                        display: true
+                    },
+                }
+            }
+        }
+    };
+new Chart(ctx2, config2)
+
+window.addEventListener('resize', function() {
+    // Assuming `myChart1` and `myChart2` are your Chart.js instances
+    myChart1.resize();
+    myChart2.resize();
+});
+  </script>
+{% endblock %}

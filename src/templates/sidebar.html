@@ -44,10 +44,7 @@
                 <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
             <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
                 <li class="w-100">
-                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1 </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2 </a>
+                    <a href="{{ url_for('dashboard.get_orders_dashboard') }}" class="nav-link px-0"> <span class=" d-sm-inline small-screen">Orders</span></a>
                 </li>
             </ul>
         </li>

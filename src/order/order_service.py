@@ -33,7 +33,7 @@ class OrderService:
     def get_order_items(self, order_id: int, page: int, ROWS_PER_PAGE: int):
         logger.info(f"Attempting to retrieve order items for order with ID {order_id}.")
         order: Order = self.order_repository.get_order(order_id)
-        if current_user.id != order.user_id and order.customer_id:
+        if current_user.id != order.user_id and current_user.id != order.customer_id:
             logger.warning(f"User {current_user.id} does not have permission to view order {order_id}.")
             abort(403)
         else:
@@ -88,4 +88,12 @@ class OrderService:
             return True
         else:
             return False
+
+    def get_orders_details_by_user_by_date(self, use_id: int) -> any:
+        orders_details = self.order_repository.get_orders_details_by_user_by_date(use_id)
+        return orders_details
+
+    def get_orders_details_by_customer_by_date(self, use_id: int) -> any:
+        orders_details = self.order_repository.get_orders_details_by_customer_by_date(use_id)
+        return orders_details
 

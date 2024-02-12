@@ -2,7 +2,7 @@ from datetime import datetime
 
 from src import db
 from src.models import Order, OrderItem, Basket, BasketItem, OrderStateSet, UserCard
-from sqlalchemy import text
+from sqlalchemy import text, func, desc, and_
 
 
 class OrderRepository:
@@ -77,3 +77,23 @@ class OrderRepository:
         # Execute the raw SQL statement using db.session
         db.session.execute(sql)
         db.session.commit()
+
+    def get_orders_details_by_user_by_date(self, user_id: int) -> any:
+        orders_details = db.session.query(func.date(Order.order_date).label('order_date'))\
+            .add_columns(
+                func.count(Order.id).label('orders_count'),
+                func.sum(Order.total_price).label('total_price')) \
+            .filter(Order.user_id == user_id, Order.order_state == OrderStateSet.STATUS_5) \
+            .group_by(func.date(Order.order_date))\
+            .all()
+        return orders_details
+
+    def get_orders_details_by_customer_by_date(self, user_id: int) -> any:
+        orders_details = db.session.query(func.date(Order.order_date).label('order_date'))\
+            .add_columns(
+                func.count(Order.id).label('orders_count'),
+                func.sum(Order.total_price).label('total_price')) \
+            .filter(Order.customer_id == user_id, Order.order_state == OrderStateSet.STATUS_5) \
+            .group_by(func.date(Order.order_date))\
+            .all()
+        return orders_details

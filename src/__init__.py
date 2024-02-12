@@ -6,6 +6,7 @@ from src.extensions import db, login_manager
 from src.album.album_routes import bp as album_bp
 from src.basket.basket_routes import bp as basket_bp
 from src.card.card_routes import bp as card_bp
+from src.dashboard.dashboard_routes import bp as dashboard_bp
 from src.main.routes import bp as main_bp
 from src.order.order_routes import bp as order_bp
 
@@ -38,4 +39,5 @@ def create_app(config_class=DevConfig):
     app.register_blueprint(card_bp, url_prefix='/cards')
     app.register_blueprint(basket_bp, url_prefix='/basket')
     app.register_blueprint(order_bp, url_prefix='/orders')
+    app.register_blueprint(dashboard_bp, url_prefix='/dashboards')
     return app

@@ -51,8 +51,9 @@ class MainController:
         return render_template('login.html')
 
     def logout(self) -> Response:
+        user_id = current_user.id
         logout_user()
-        logger.info(f"User {current_user.id} logged out successfully.")
+        logger.info(f"User {user_id} logged out successfully.")
         flash('Logged out successfully.', 'success')
         return redirect(url_for('main.login'))
 

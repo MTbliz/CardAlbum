@@ -18,7 +18,7 @@ class OrderController:
     def orders(self) -> str:
         logger.info(f"Visiting orders page.")
         page: int = request.args.get('page', 1, type=int)
-        ROWS_PER_PAGE: int = 5
+        ROWS_PER_PAGE: int = 10
         orders = self.order_service.get_orders(page, ROWS_PER_PAGE)
         logger.info(f"Rendering orders page for user: {current_user.id}")
         return render_template("orders/orders.html",
