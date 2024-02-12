@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from src import db
-from src.models import Order, OrderItem, Basket, BasketItem, OrderStateSet
+from src.models import Order, OrderItem, Basket, BasketItem, OrderStateSet, UserCard
+from sqlalchemy import text
 
 
 class OrderRepository:
@@ -48,6 +49,7 @@ class OrderRepository:
             order.order_items.append(order_item)
         db.session.add(order)
         db.session.commit()
+        self.update_user_cards_availability_after_create_order(basket_items)
 
     def next_order_state(self, order_id: int) -> None:
         order: Order = Order.query.filter_by(id=order_id).first()
@@ -60,3 +62,18 @@ class OrderRepository:
             new_order_state = f"{order_state_prefix}_{new_order_state_number}"
             order.order_state = getattr(OrderStateSet, new_order_state.upper())
             db.session.commit()
+
+    def update_user_cards_availability_after_create_order(self, basket_items: list[BasketItem]) -> None:
+        # Get the IDs of the UserCard items that correspond to the BasketItems
+        user_cards_ids = [basket_item.user_card_id for basket_item in basket_items]
+
+        # Raw SQL update statement
+        sql = text("""
+            UPDATE user_cards
+            SET availability = availability - (SELECT SUM(quantity) FROM basket_items WHERE user_cards.id = basket_items.user_card_id)
+            WHERE EXISTS (SELECT  1 FROM basket_items WHERE user_cards.id = basket_items.user_card_id)
+        """)
+
+        # Execute the raw SQL statement using db.session
+        db.session.execute(sql)
+        db.session.commit()
