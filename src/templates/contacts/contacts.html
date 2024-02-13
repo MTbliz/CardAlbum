@@ -1,0 +1,26 @@
+<div class="container contacts">
+    <div class="row">
+        <h3>Contacts</h3>
+        <table class="table caption-top">
+            <thead>
+            <tr>
+                <th scope="col">UserName</th>
+                <th scope="col">Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{ contact.username }}</td>
+                <td>{{ contact.email }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        {% with paginated_data=contacts %}
+        {% include 'pagination.html'%}
+        {% endwith %}
+    </div>
+</div>

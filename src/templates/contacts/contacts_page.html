@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex-container cards">
+        <div class="row">
+            <div class="col-9">
+                {% include 'contacts/contacts.html' %}
+            </div>
+            <div class="col-3">
+                {% include 'contacts/invites.html' %}
+            </div>
+        </div>
+</div>
+{% endblock %}

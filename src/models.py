@@ -84,6 +84,13 @@ colors_card_details = db.Table('colors_card_details', db.Model.metadata,
                                          primary_key=True)
                                )
 
+user_contacts = db.Table(
+    'user_contacts',
+    db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('contact_id', db.Integer, db.ForeignKey('users.id'))
+)
+
 
 class Album(db.Model):
     __tablename__ = "albums"
@@ -105,7 +112,6 @@ class UserCard(db.Model):
     card_id = db.Column(db.Integer, db.ForeignKey('cards.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     basket_items = db.relationship('BasketItem', backref='user_card')
-
 
 
 class Card(db.Model):
@@ -151,6 +157,14 @@ class User(UserMixin, db.Model):
     user_albums = db.relationship('Album', backref='user')
     user_cards = db.relationship('UserCard', backref='user')
     basket = db.relationship('Basket', backref='user', uselist=False)
+
+    contacts = db.relationship(
+        'User',
+        secondary=user_contacts,
+        primaryjoin=(user_contacts.c.user_id == id),
+        secondaryjoin=(user_contacts.c.contact_id == id),
+        backref=db.backref('contacted_by', lazy='dynamic')
+    )
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -229,3 +243,18 @@ class OrderItem(db.Model):
     quantity = db.Column(db.Integer)
     quality = db.Column(Enum(CardQuality))
     total_price = db.Column(db.Float(), nullable=False)
+
+
+class Invite(db.Model):
+
+    __tablename__ = 'invites'
+
+    id = db.Column(db.Integer, primary_key=True)
+    invite_date = db.Column(db.DateTime, nullable=False)
+    expiration_date = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    contact_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user = db.relationship('User', backref='invites_send', foreign_keys=[user_id])
+    contact = db.relationship('User', backref='invites_received', foreign_keys=[contact_id])
+
