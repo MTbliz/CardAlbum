@@ -126,7 +126,7 @@ def logged_in_user(app, client):
     with app.test_request_context():
         user_service = UserService()
         user: User = user_service.get_user_by_email('testuser@example.com')
-        if user and user.check_password('123456'):
+        if user and user.check_password(''):
             login_user(user)
         yield user
         logout_user()
